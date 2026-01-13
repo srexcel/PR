@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PR-System | Sistema de Conocimiento Vivo</title>
+    <title>PR-System | Demo Interactiva</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -24,7 +24,7 @@
             --radius-sm: 6px;
             --radius-md: 10px;
             --radius-lg: 16px;
-            --transition: 0.2s ease;
+            --transition: 0.3s ease;
         }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -33,9 +33,264 @@
             color: var(--text-primary);
             line-height: 1.6;
             min-height: 100vh;
+            overflow-x: hidden;
         }
-        .app-container { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
-        
+
+        /* ============================================================
+           PANTALLA DE INICIO (LANDING)
+           ============================================================ */
+        .landing-screen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .landing-screen::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .landing-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        .landing-logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--accent-primary), #d97706);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--bg-primary);
+            font-family: 'JetBrains Mono', monospace;
+            margin: 0 auto 32px;
+            box-shadow: 0 20px 60px rgba(245, 158, 11, 0.3);
+        }
+
+        .landing-title {
+            font-size: clamp(36px, 6vw, 56px);
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .landing-title span {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .landing-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 48px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .landing-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 48px;
+            text-align: left;
+        }
+
+        .landing-feature {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px;
+        }
+
+        .landing-feature-icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .landing-feature-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .landing-feature-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .btn-demo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, var(--accent-primary), #d97706);
+            color: var(--bg-primary);
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .btn-demo:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(245, 158, 11, 0.4);
+        }
+
+        .landing-note {
+            margin-top: 32px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* ============================================================
+           PANTALLA DE INSTALACIÓN (SIMULADA)
+           ============================================================ */
+        .install-screen {
+            display: none;
+            min-height: 100vh;
+            padding: 60px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .terminal {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+        }
+
+        .terminal-header {
+            background: #161b22;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27ca40; }
+
+        .terminal-title {
+            margin-left: 12px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .terminal-body {
+            padding: 20px;
+            min-height: 300px;
+        }
+
+        .terminal-line {
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: typeIn 0.3s ease forwards;
+        }
+
+        .terminal-line.command {
+            color: var(--accent-secondary);
+        }
+
+        .terminal-line.command::before {
+            content: '$ ';
+            color: var(--accent-primary);
+        }
+
+        .terminal-line.output {
+            color: var(--text-secondary);
+        }
+
+        .terminal-line.success {
+            color: var(--accent-secondary);
+        }
+
+        .terminal-line.info {
+            color: var(--accent-info);
+        }
+
+        @keyframes typeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .install-progress {
+            margin-top: 32px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* ============================================================
+           PANTALLA DEL SISTEMA (APP)
+           ============================================================ */
+        .app-screen {
+            display: none;
+        }
+
+        .app-container { 
+            display: grid; 
+            grid-template-columns: 260px 1fr; 
+            min-height: 100vh; 
+        }
+
         /* Sidebar */
         .sidebar {
             background: var(--bg-secondary);
@@ -48,524 +303,943 @@
             display: flex;
             flex-direction: column;
         }
-        .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+
+        .logo { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            margin-bottom: 28px; 
+            padding-bottom: 20px; 
+            border-bottom: 1px solid var(--border-color); 
+        }
+
         .logo-icon {
             width: 44px; height: 44px;
             background: linear-gradient(135deg, var(--accent-primary), #d97706);
             border-radius: var(--radius-md);
             display: flex; align-items: center; justify-content: center;
-            font-size: 20px; font-weight: 700; color: var(--bg-primary);
+            font-size: 18px; font-weight: 700; color: var(--bg-primary);
             font-family: 'JetBrains Mono', monospace;
         }
-        .logo-title { font-size: 18px; font-weight: 700; }
+
+        .logo-title { font-size: 17px; font-weight: 700; }
         .logo-subtitle { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-        
+
         .nav-section { margin-bottom: 20px; }
-        .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 10px; padding-left: 12px; }
+        .nav-section-title { 
+            font-size: 10px; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            color: var(--text-muted); 
+            margin-bottom: 10px; 
+            padding-left: 12px; 
+        }
+
         .nav-item {
             display: flex; align-items: center; gap: 10px;
             padding: 11px 14px; border-radius: var(--radius-md);
             cursor: pointer; transition: var(--transition);
             color: var(--text-secondary); font-weight: 500; margin-bottom: 4px;
         }
+
         .nav-item:hover { background: var(--bg-tertiary); color: var(--text-primary); }
         .nav-item.active {
             background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.1));
             color: var(--accent-primary); border: 1px solid rgba(245, 158, 11, 0.3);
         }
+
         .nav-icon { font-size: 16px; width: 22px; text-align: center; }
-        
+
         .sidebar-stats { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-color); }
         .stat-card { background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 14px; margin-bottom: 10px; }
         .stat-label { font-size: 11px; color: var(--text-muted); margin-bottom: 2px; }
         .stat-value { font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--accent-primary); }
-        
+
+        .demo-badge {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 16px;
+        }
+
         /* Main Content */
         .main-content { margin-left: 260px; padding: 28px; min-height: 100vh; }
         .page { display: none; animation: fadeIn 0.3s ease; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
         .page-header { margin-bottom: 28px; }
         .page-title { font-size: 28px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.5px; }
         .page-description { color: var(--text-secondary); font-size: 15px; }
-        
+
         /* Cards */
-        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px; margin-bottom: 22px; }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border-subtle); }
+        .card { 
+            background: var(--bg-card); 
+            border: 1px solid var(--border-color); 
+            border-radius: var(--radius-lg); 
+            padding: 22px; 
+            margin-bottom: 22px; 
+        }
+
+        .card-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 18px; 
+            padding-bottom: 14px; 
+            border-bottom: 1px solid var(--border-subtle); 
+        }
+
         .card-title { font-size: 17px; font-weight: 600; }
-        
+
         /* Forms */
         .form-group { margin-bottom: 18px; }
-        .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .form-input, .form-textarea, .form-select {
-            width: 100%; padding: 12px 14px;
-            background: var(--bg-tertiary); border: 1px solid var(--border-color);
-            border-radius: var(--radius-md); color: var(--text-primary);
-            font-size: 14px; font-family: inherit; transition: var(--transition);
+        .form-label { 
+            display: block; 
+            font-size: 12px; 
+            font-weight: 600; 
+            color: var(--text-secondary); 
+            margin-bottom: 7px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
         }
-        .form-input:focus, .form-textarea:focus, .form-select:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1); }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%; 
+            padding: 12px 14px;
+            background: var(--bg-tertiary); 
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); 
+            color: var(--text-primary);
+            font-size: 14px; 
+            font-family: inherit; 
+            transition: var(--transition);
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus { 
+            outline: none; 
+            border-color: var(--accent-primary); 
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1); 
+        }
+
         .form-textarea { min-height: 100px; resize: vertical; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-        
+
         /* Buttons */
         .btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-            padding: 11px 20px; border: none; border-radius: var(--radius-md);
-            font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: inherit;
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 7px;
+            padding: 11px 20px; 
+            border: none; 
+            border-radius: var(--radius-md);
+            font-size: 13px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: var(--transition); 
+            font-family: inherit;
         }
-        .btn-primary { background: linear-gradient(135deg, var(--accent-primary), #d97706); color: var(--bg-primary); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3); }
-        .btn-secondary { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); }
+
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--accent-primary), #d97706); 
+            color: var(--bg-primary); 
+        }
+
+        .btn-primary:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3); 
+        }
+
+        .btn-secondary { 
+            background: var(--bg-tertiary); 
+            color: var(--text-primary); 
+            border: 1px solid var(--border-color); 
+        }
+
         .btn-secondary:hover { background: var(--border-color); }
         .btn-success { background: var(--accent-secondary); color: white; }
-        
+
         /* Badges */
-        .badge { display: inline-flex; align-items: center; padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+        .badge { 
+            display: inline-flex; 
+            align-items: center; 
+            padding: 4px 9px; 
+            border-radius: 999px; 
+            font-size: 11px; 
+            font-weight: 600; 
+        }
+
         .badge-estado-abierto { background: rgba(239, 68, 68, 0.15); color: #f87171; }
         .badge-estado-en_proceso { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
         .badge-estado-resuelto { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-        .badge-prioridad-baja { background: rgba(107, 114, 128, 0.15); color: #9ca3af; }
-        .badge-prioridad-media { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
         .badge-prioridad-alta { background: rgba(249, 115, 22, 0.15); color: #fb923c; }
-        .badge-prioridad-critica { background: rgba(239, 68, 68, 0.15); color: #f87171; }
-        
+        .badge-prioridad-media { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+
         /* Incidencias List */
         .incidencia-list { display: flex; flex-direction: column; gap: 10px; }
+
         .incidencia-item {
-            background: var(--bg-tertiary); border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md); padding: 18px; cursor: pointer; transition: var(--transition);
+            background: var(--bg-tertiary); 
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md); 
+            padding: 18px; 
+            cursor: pointer; 
+            transition: var(--transition);
         }
-        .incidencia-item:hover { border-color: var(--accent-primary); transform: translateX(4px); }
-        .incidencia-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+
+        .incidencia-item:hover { 
+            border-color: var(--accent-primary); 
+            transform: translateX(4px); 
+        }
+
+        .incidencia-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            margin-bottom: 10px; 
+        }
+
         .incidencia-titulo { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
         .incidencia-meta { display: flex; gap: 14px; font-size: 12px; color: var(--text-muted); }
         .incidencia-badges { display: flex; gap: 7px; }
-        
+
         /* Chat */
-        .chat-container { display: flex; flex-direction: column; height: calc(100vh - 180px); min-height: 450px; }
-        .chat-messages {
-            flex: 1; overflow-y: auto; padding: 18px;
-            background: var(--bg-tertiary); border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-            border: 1px solid var(--border-color); border-bottom: none;
+        .chat-container { 
+            display: flex; 
+            flex-direction: column; 
+            height: calc(100vh - 220px); 
+            min-height: 400px; 
         }
-        .message { margin-bottom: 18px; max-width: 80%; }
+
+        .chat-messages {
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 18px;
+            background: var(--bg-tertiary); 
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            border: 1px solid var(--border-color); 
+            border-bottom: none;
+        }
+
+        .message { margin-bottom: 18px; max-width: 85%; }
         .message-user { margin-left: auto; }
-        .message-content { padding: 14px 18px; border-radius: var(--radius-md); line-height: 1.6; }
-        .message-user .message-content { background: linear-gradient(135deg, var(--accent-primary), #d97706); color: var(--bg-primary); }
-        .message-assistant .message-content { background: var(--bg-card); border: 1px solid var(--border-color); }
-        .message-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 5px; }
+        .message-content { 
+            padding: 14px 18px; 
+            border-radius: var(--radius-md); 
+            line-height: 1.6; 
+        }
+
+        .message-user .message-content { 
+            background: linear-gradient(135deg, var(--accent-primary), #d97706); 
+            color: var(--bg-primary); 
+        }
+
+        .message-assistant .message-content { 
+            background: var(--bg-card); 
+            border: 1px solid var(--border-color); 
+        }
+
+        .message-label { 
+            font-size: 10px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            color: var(--text-muted); 
+            margin-bottom: 5px; 
+        }
+
         .chat-input-container {
-            display: flex; gap: 10px; padding: 18px;
-            background: var(--bg-card); border: 1px solid var(--border-color);
+            display: flex; 
+            gap: 10px; 
+            padding: 18px;
+            background: var(--bg-card); 
+            border: 1px solid var(--border-color);
             border-radius: 0 0 var(--radius-lg) var(--radius-lg);
         }
+
         .chat-input { flex: 1; }
-        
+
         /* Modal */
         .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.7); z-index: 1000;
-            align-items: center; justify-content: center; backdrop-filter: blur(4px);
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7); 
+            z-index: 1000;
+            align-items: center; 
+            justify-content: center; 
+            backdrop-filter: blur(4px);
         }
+
         .modal-overlay.active { display: flex; }
+
         .modal {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg); width: 90%; max-width: 650px;
-            max-height: 90vh; overflow-y: auto;
+            background: var(--bg-card); 
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg); 
+            width: 90%; 
+            max-width: 650px;
+            max-height: 90vh; 
+            overflow-y: auto;
+            animation: modalIn 0.3s ease;
         }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; border-bottom: 1px solid var(--border-color); }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 18px 22px; 
+            border-bottom: 1px solid var(--border-color); 
+        }
+
         .modal-title { font-size: 18px; font-weight: 600; }
-        .modal-close { background: none; border: none; font-size: 22px; color: var(--text-muted); cursor: pointer; padding: 4px; }
+
+        .modal-close { 
+            background: none; 
+            border: none; 
+            font-size: 22px; 
+            color: var(--text-muted); 
+            cursor: pointer; 
+            padding: 4px; 
+        }
+
         .modal-close:hover { color: var(--text-primary); }
         .modal-body { padding: 22px; }
-        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; padding: 18px 22px; border-top: 1px solid var(--border-color); }
-        
+
+        .modal-footer { 
+            display: flex; 
+            justify-content: flex-end; 
+            gap: 10px; 
+            padding: 18px 22px; 
+            border-top: 1px solid var(--border-color); 
+        }
+
+        /* Casos similares highlight */
+        .casos-similares {
+            margin-top: 20px;
+            padding: 18px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: var(--radius-md);
+            animation: highlightIn 0.5s ease;
+        }
+
+        @keyframes highlightIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .casos-similares-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-bottom: 14px;
+        }
+
+        .caso-similar-item {
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            line-height: 1.6;
+            border-left: 3px solid var(--accent-secondary);
+        }
+
+        .caso-similar-item:last-child { margin-bottom: 0; }
+
+        .caso-similar-header {
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .caso-similar-meta {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
         /* Timeline */
         .timeline { position: relative; padding-left: 28px; }
-        .timeline::before { content: ''; position: absolute; left: 9px; top: 0; bottom: 0; width: 2px; background: var(--border-color); }
+        .timeline::before { 
+            content: ''; 
+            position: absolute; 
+            left: 9px; 
+            top: 0; 
+            bottom: 0; 
+            width: 2px; 
+            background: var(--border-color); 
+        }
+
         .timeline-item { position: relative; margin-bottom: 22px; }
         .timeline-item::before {
-            content: ''; position: absolute; left: -22px; top: 7px;
-            width: 10px; height: 10px; border-radius: 50%;
-            background: var(--accent-primary); border: 2px solid var(--bg-card);
+            content: ''; 
+            position: absolute; 
+            left: -22px; 
+            top: 7px;
+            width: 10px; 
+            height: 10px; 
+            border-radius: 50%;
+            background: var(--accent-primary); 
+            border: 2px solid var(--bg-card);
         }
+
         .timeline-autor { font-weight: 600; margin-bottom: 3px; }
         .timeline-fecha { font-size: 11px; color: var(--text-muted); margin-bottom: 7px; }
-        .timeline-contenido { background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 14px; font-size: 13px; line-height: 1.6; }
-        
-        /* Loading & Empty */
-        .loading { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 36px; color: var(--text-muted); }
-        .spinner { width: 18px; height: 18px; border: 2px solid var(--border-color); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .empty-state { text-align: center; padding: 50px 18px; color: var(--text-muted); }
-        .empty-state-icon { font-size: 42px; margin-bottom: 14px; opacity: 0.5; }
-        .empty-state-title { font-size: 16px; color: var(--text-secondary); margin-bottom: 6px; }
-        
+        .timeline-contenido { 
+            background: var(--bg-tertiary); 
+            border-radius: var(--radius-md); 
+            padding: 14px; 
+            font-size: 13px; 
+            line-height: 1.6; 
+        }
+
         /* Toast */
-        .toast-container { position: fixed; bottom: 22px; right: 22px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+        .toast-container { 
+            position: fixed; 
+            bottom: 22px; 
+            right: 22px; 
+            z-index: 2000; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+        }
+
         .toast {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: var(--radius-md); padding: 14px 18px;
-            display: flex; align-items: center; gap: 10px;
-            animation: slideIn 0.3s ease; min-width: 280px;
+            background: var(--bg-card); 
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); 
+            padding: 14px 18px;
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            animation: slideIn 0.3s ease; 
+            min-width: 280px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
         }
+
         .toast-success { border-left: 4px solid var(--accent-secondary); }
-        .toast-error { border-left: 4px solid var(--accent-warning); }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
-        
-        /* Upload */
-        .upload-zone {
-            border: 2px dashed var(--border-color); border-radius: var(--radius-lg);
-            padding: 36px; text-align: center; cursor: pointer; transition: var(--transition);
+        .toast-info { border-left: 4px solid var(--accent-info); }
+
+        @keyframes slideIn { 
+            from { opacity: 0; transform: translateX(100px); } 
+            to { opacity: 1; transform: translateX(0); } 
         }
-        .upload-zone:hover { border-color: var(--accent-primary); background: rgba(245, 158, 11, 0.03); }
-        .upload-icon { font-size: 42px; margin-bottom: 14px; color: var(--text-muted); }
-        .doc-list { display: grid; gap: 10px; margin-top: 18px; }
-        .doc-item { display: flex; align-items: center; gap: 10px; padding: 14px; background: var(--bg-tertiary); border-radius: var(--radius-md); }
-        .doc-icon { font-size: 22px; }
+
+        /* Documentos */
+        .doc-list { display: grid; gap: 10px; }
+        .doc-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 14px; 
+            background: var(--bg-tertiary); 
+            border-radius: var(--radius-md); 
+        }
+
+        .doc-icon { font-size: 24px; }
         .doc-info { flex: 1; }
         .doc-name { font-weight: 500; margin-bottom: 2px; font-size: 14px; }
         .doc-meta { font-size: 11px; color: var(--text-muted); }
-        
-        /* Config */
-        .config-section { margin-bottom: 28px; }
-        .config-title { font-size: 15px; font-weight: 600; margin-bottom: 14px; padding-bottom: 7px; border-bottom: 1px solid var(--border-subtle); }
-        .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-        .provider-card {
-            background: var(--bg-tertiary); border: 2px solid var(--border-color);
-            border-radius: var(--radius-md); padding: 18px; cursor: pointer; transition: var(--transition);
+
+        /* Loading animation */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 14px 18px;
         }
-        .provider-card:hover { border-color: var(--text-muted); }
-        .provider-card.selected { border-color: var(--accent-primary); background: rgba(245, 158, 11, 0.05); }
-        .provider-name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-        .provider-desc { font-size: 12px; color: var(--text-muted); }
-        
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            animation: typingBounce 1.4s ease-in-out infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-8px); }
+        }
+
+        /* Responsive */
         @media (max-width: 800px) {
             .app-container { grid-template-columns: 1fr; }
             .sidebar { position: relative; width: 100%; height: auto; }
             .main-content { margin-left: 0; }
+            .form-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <nav class="sidebar">
-            <div class="logo">
-                <div class="logo-icon">PR</div>
-                <div class="logo-text">
-                    <span class="logo-title">PR-System</span>
-                    <span class="logo-subtitle">Conocimiento Vivo</span>
+
+    <!-- ============================================================
+         PANTALLA 1: LANDING
+         ============================================================ -->
+    <div class="landing-screen" id="landing-screen">
+        <div class="landing-content">
+            <div class="landing-logo">PR</div>
+            <h1 class="landing-title">
+                <span>PR-System</span><br>
+                Sistema de Conocimiento Vivo
+            </h1>
+            <p class="landing-subtitle">
+                El conocimiento de tu empresa ya no se pierde cuando la gente se va. 
+                Un sistema que aprende, aconseja y hereda.
+            </p>
+
+            <div class="landing-features">
+                <div class="landing-feature">
+                    <div class="landing-feature-icon">🧠</div>
+                    <div class="landing-feature-title">Aprende</div>
+                    <div class="landing-feature-desc">Cada caso resuelto alimenta la base de conocimiento</div>
+                </div>
+                <div class="landing-feature">
+                    <div class="landing-feature-icon">💡</div>
+                    <div class="landing-feature-title">Aconseja</div>
+                    <div class="landing-feature-desc">Sugiere soluciones basadas en casos anteriores</div>
+                </div>
+                <div class="landing-feature">
+                    <div class="landing-feature-icon">🔄</div>
+                    <div class="landing-feature-title">Hereda</div>
+                    <div class="landing-feature-desc">El nuevo ingeniero tiene acceso desde el día 1</div>
+                </div>
+                <div class="landing-feature">
+                    <div class="landing-feature-icon">💬</div>
+                    <div class="landing-feature-title">Conversa</div>
+                    <div class="landing-feature-desc">Interfaz natural, no formularios interminables</div>
                 </div>
             </div>
-            <div class="nav">
-                <div class="nav-section">
-                    <div class="nav-section-title">Principal</div>
-                    <div class="nav-item active" data-page="dashboard"><span class="nav-icon">📊</span><span>Dashboard</span></div>
-                    <div class="nav-item" data-page="incidencias"><span class="nav-icon">📋</span><span>Incidencias</span></div>
-                    <div class="nav-item" data-page="consultar"><span class="nav-icon">💬</span><span>Consultar Sistema</span></div>
-                </div>
-                <div class="nav-section">
-                    <div class="nav-section-title">Conocimiento</div>
-                    <div class="nav-item" data-page="documentos"><span class="nav-icon">📁</span><span>Documentos</span></div>
-                </div>
-                <div class="nav-section">
-                    <div class="nav-section-title">Sistema</div>
-                    <div class="nav-item" data-page="configuracion"><span class="nav-icon">⚙️</span><span>Configuración</span></div>
-                </div>
-            </div>
-            <div class="sidebar-stats">
-                <div class="stat-card">
-                    <div class="stat-label">Documentos en RAG</div>
-                    <div class="stat-value" id="stat-documentos">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Casos resueltos</div>
-                    <div class="stat-value" id="stat-resueltos">0</div>
-                </div>
-            </div>
-        </nav>
 
-        <main class="main-content">
-            <!-- DASHBOARD -->
-            <section id="page-dashboard" class="page active">
-                <div class="page-header">
-                    <h1 class="page-title">Dashboard</h1>
-                    <p class="page-description">Vista general del sistema de conocimiento</p>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Incidencias Recientes</h2>
-                        <button class="btn btn-primary" onclick="abrirNuevaIncidencia()">+ Nueva Incidencia</button>
-                    </div>
-                    <div id="dashboard-incidencias" class="incidencia-list">
-                        <div class="loading"><div class="spinner"></div><span>Cargando...</span></div>
-                    </div>
-                </div>
-            </section>
+            <button class="btn-demo" onclick="iniciarDemo()">
+                ▶ Ver Demo Interactiva
+            </button>
 
-            <!-- INCIDENCIAS -->
-            <section id="page-incidencias" class="page">
-                <div class="page-header">
-                    <h1 class="page-title">Incidencias</h1>
-                    <p class="page-description">Gestión de casos y problemas reportados</p>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Todas las Incidencias</h2>
-                        <button class="btn btn-primary" onclick="abrirNuevaIncidencia()">+ Nueva Incidencia</button>
-                    </div>
-                    <div id="lista-incidencias" class="incidencia-list">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📋</div>
-                            <div class="empty-state-title">No hay incidencias</div>
-                            <p>Crea la primera incidencia para comenzar</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- CONSULTAR -->
-            <section id="page-consultar" class="page">
-                <div class="page-header">
-                    <h1 class="page-title">Consultar Sistema</h1>
-                    <p class="page-description">Pregunta al sistema sobre casos anteriores</p>
-                </div>
-                <div class="card">
-                    <div class="chat-container">
-                        <div class="chat-messages" id="chat-messages">
-                            <div class="message message-assistant">
-                                <div class="message-label">Sistema PR</div>
-                                <div class="message-content">
-                                    ¡Hola! Soy el sistema PR. Puedo ayudarte a encontrar información sobre casos anteriores y darte recomendaciones.<br><br>
-                                    Prueba preguntar: "¿Qué casos de soldadura hemos tenido?" o "¿Cómo resolvimos problemas de temperatura?"
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chat-input-container">
-                            <input type="text" class="form-input chat-input" id="chat-input" placeholder="Escribe tu pregunta..." onkeypress="if(event.key === 'Enter') enviarConsulta()">
-                            <button class="btn btn-primary" onclick="enviarConsulta()">Enviar</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- DOCUMENTOS -->
-            <section id="page-documentos" class="page">
-                <div class="page-header">
-                    <h1 class="page-title">Base de Conocimiento</h1>
-                    <p class="page-description">Documentos ISO, procedimientos, manuales y casos resueltos</p>
-                </div>
-                <div class="card">
-                    <div class="card-header"><h2 class="card-title">Subir Documento</h2></div>
-                    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
-                        <div class="upload-icon">📄</div>
-                        <p>Arrastra archivos aquí o haz clic para seleccionar</p>
-                        <p style="font-size: 11px; color: var(--text-muted); margin-top: 7px;">Soporta: .txt, .md, .csv</p>
-                    </div>
-                    <input type="file" id="file-input" hidden onchange="subirDocumento(this.files[0])">
-                </div>
-                <div class="card">
-                    <div class="card-header"><h2 class="card-title">Documentos en el Sistema</h2></div>
-                    <div id="lista-documentos" class="doc-list">
-                        <div class="loading"><div class="spinner"></div><span>Cargando...</span></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- CONFIGURACIÓN -->
-            <section id="page-configuracion" class="page">
-                <div class="page-header">
-                    <h1 class="page-title">Configuración</h1>
-                    <p class="page-description">Configura el proveedor de LLM</p>
-                </div>
-                <div class="card">
-                    <div class="config-section">
-                        <h3 class="config-title">Proveedor de LLM</h3>
-                        <div class="config-grid">
-                            <div class="provider-card selected" data-provider="ollama" onclick="seleccionarProvider('ollama')">
-                                <div class="provider-name">🏠 Ollama (Local)</div>
-                                <div class="provider-desc">Ejecuta modelos en tu servidor. Sin costo.</div>
-                            </div>
-                            <div class="provider-card" data-provider="openai" onclick="seleccionarProvider('openai')">
-                                <div class="provider-name">🌐 OpenAI</div>
-                                <div class="provider-desc">GPT-4, GPT-3.5. Requiere API key.</div>
-                            </div>
-                            <div class="provider-card" data-provider="anthropic" onclick="seleccionarProvider('anthropic')">
-                                <div class="provider-name">🧠 Anthropic</div>
-                                <div class="provider-desc">Claude. Requiere API key.</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="config-section" id="config-ollama">
-                        <h3 class="config-title">Configuración Ollama</h3>
-                        <div class="form-group">
-                            <label class="form-label">URL del servidor</label>
-                            <input type="text" class="form-input" id="ollama-url" value="http://localhost:11434">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Modelo</label>
-                            <select class="form-select" id="ollama-model">
-                                <option value="llama3">Llama 3</option>
-                                <option value="llama3.1">Llama 3.1</option>
-                                <option value="deepseek-coder">DeepSeek Coder</option>
-                                <option value="mistral">Mistral</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="config-section" id="config-cloud" style="display: none;">
-                        <h3 class="config-title">Configuración Cloud</h3>
-                        <div class="form-group">
-                            <label class="form-label">API Key</label>
-                            <input type="password" class="form-input" id="api-key" placeholder="sk-...">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Modelo</label>
-                            <input type="text" class="form-input" id="cloud-model" placeholder="gpt-4">
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 10px; margin-top: 22px;">
-                        <button class="btn btn-primary" onclick="guardarConfiguracion()">Guardar</button>
-                        <button class="btn btn-secondary" onclick="probarConexion()">Probar Conexión</button>
-                    </div>
-                </div>
-            </section>
-        </main>
+            <p class="landing-note">
+                Demo simulada • No requiere instalación • ~3 minutos
+            </p>
+        </div>
     </div>
 
-    <!-- Modal Nueva Incidencia -->
-    <div class="modal-overlay" id="modal-nueva-incidencia">
+    <!-- ============================================================
+         PANTALLA 2: INSTALACIÓN (SIMULADA)
+         ============================================================ -->
+    <div class="install-screen" id="install-screen">
+        <h2 style="margin-bottom: 8px;">Simulando Instalación...</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 32px;">
+            En un escenario real, esto tomaría ~2 minutos
+        </p>
+
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-dot red"></div>
+                <div class="terminal-dot yellow"></div>
+                <div class="terminal-dot green"></div>
+                <span class="terminal-title">Terminal — PR-System Install</span>
+            </div>
+            <div class="terminal-body" id="terminal-body">
+                <!-- Las líneas se agregan dinámicamente -->
+            </div>
+        </div>
+
+        <div class="install-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-text" id="progress-text">Iniciando...</div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         PANTALLA 3: APLICACIÓN
+         ============================================================ -->
+    <div class="app-screen" id="app-screen">
+        <div class="app-container">
+            <!-- Sidebar -->
+            <nav class="sidebar">
+                <div class="logo">
+                    <div class="logo-icon">PR</div>
+                    <div class="logo-text">
+                        <span class="logo-title">PR-System</span>
+                        <span class="logo-subtitle">Conocimiento Vivo</span>
+                    </div>
+                </div>
+
+                <div class="nav">
+                    <div class="nav-section">
+                        <div class="nav-section-title">Principal</div>
+                        <div class="nav-item active" data-page="dashboard" onclick="navegarA('dashboard')">
+                            <span class="nav-icon">📊</span><span>Dashboard</span>
+                        </div>
+                        <div class="nav-item" data-page="incidencias" onclick="navegarA('incidencias')">
+                            <span class="nav-icon">📋</span><span>Incidencias</span>
+                        </div>
+                        <div class="nav-item" data-page="consultar" onclick="navegarA('consultar')">
+                            <span class="nav-icon">💬</span><span>Consultar Sistema</span>
+                        </div>
+                    </div>
+                    <div class="nav-section">
+                        <div class="nav-section-title">Conocimiento</div>
+                        <div class="nav-item" data-page="documentos" onclick="navegarA('documentos')">
+                            <span class="nav-icon">📁</span><span>Documentos RAG</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Documentos en RAG</div>
+                        <div class="stat-value" id="stat-docs">7</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Casos resueltos</div>
+                        <div class="stat-value" id="stat-resueltos">23</div>
+                    </div>
+                    <div class="demo-badge">🎮 MODO DEMO</div>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                
+                <!-- PAGE: Dashboard -->
+                <section id="page-dashboard" class="page active">
+                    <div class="page-header">
+                        <h1 class="page-title">Dashboard</h1>
+                        <p class="page-description">Vista general del sistema de conocimiento</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Incidencias Recientes</h2>
+                            <button class="btn btn-primary" onclick="abrirNuevaIncidencia()">
+                                + Nueva Incidencia
+                            </button>
+                        </div>
+                        <div class="incidencia-list" id="lista-dashboard">
+                            <!-- Se llena con JS -->
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(16, 185, 129, 0.05)); border-color: rgba(245, 158, 11, 0.3);">
+                        <h3 style="margin-bottom: 12px;">💡 Prueba el flujo completo</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                            Haz clic en <strong>"+ Nueva Incidencia"</strong> y reporta un problema de soldadura. 
+                            El sistema buscará casos similares en el RAG automáticamente.
+                        </p>
+                        <button class="btn btn-primary" onclick="abrirNuevaIncidencia()">
+                            Probar ahora →
+                        </button>
+                    </div>
+                </section>
+
+                <!-- PAGE: Incidencias -->
+                <section id="page-incidencias" class="page">
+                    <div class="page-header">
+                        <h1 class="page-title">Incidencias</h1>
+                        <p class="page-description">Gestión de casos y problemas reportados</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Todas las Incidencias</h2>
+                            <button class="btn btn-primary" onclick="abrirNuevaIncidencia()">+ Nueva Incidencia</button>
+                        </div>
+                        <div class="incidencia-list" id="lista-incidencias"></div>
+                    </div>
+                </section>
+
+                <!-- PAGE: Consultar -->
+                <section id="page-consultar" class="page">
+                    <div class="page-header">
+                        <h1 class="page-title">Consultar Sistema</h1>
+                        <p class="page-description">Pregunta al sistema sobre casos anteriores</p>
+                    </div>
+                    <div class="card">
+                        <div class="chat-container">
+                            <div class="chat-messages" id="chat-messages">
+                                <div class="message message-assistant">
+                                    <div class="message-label">Sistema PR</div>
+                                    <div class="message-content">
+                                        ¡Hola! Soy el sistema PR. Puedo ayudarte a encontrar información sobre casos anteriores.<br><br>
+                                        <strong>Prueba preguntar:</strong><br>
+                                        • "¿Qué problemas de soldadura hemos tenido?"<br>
+                                        • "¿Cómo resolvimos fallas de temperatura?"<br>
+                                        • "¿Cuántos casos tiene la línea 3?"
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-input-container">
+                                <input type="text" class="form-input chat-input" id="chat-input" 
+                                       placeholder="Escribe tu pregunta..." 
+                                       onkeypress="if(event.key === 'Enter') enviarConsulta()">
+                                <button class="btn btn-primary" onclick="enviarConsulta()">Enviar</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PAGE: Documentos -->
+                <section id="page-documentos" class="page">
+                    <div class="page-header">
+                        <h1 class="page-title">Base de Conocimiento (RAG)</h1>
+                        <p class="page-description">Documentos y casos que alimentan la inteligencia del sistema</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Documentos Cargados</h2>
+                        </div>
+                        <div class="doc-list" id="lista-documentos"></div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         MODAL: Nueva Incidencia
+         ============================================================ -->
+    <div class="modal-overlay" id="modal-nueva">
         <div class="modal">
             <div class="modal-header">
                 <h2 class="modal-title">Nueva Incidencia</h2>
-                <button class="modal-close" onclick="cerrarModal('modal-nueva-incidencia')">&times;</button>
+                <button class="modal-close" onclick="cerrarModal('modal-nueva')">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label class="form-label">Título</label>
-                    <input type="text" class="form-input" id="inc-titulo" placeholder="Describe brevemente el problema">
+                    <label class="form-label">Título del problema</label>
+                    <input type="text" class="form-input" id="inc-titulo" 
+                           placeholder="Ej: Punto frío en soldadura, línea 3"
+                           value="Punto frío en soldadura, línea 3">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Descripción detallada</label>
-                    <textarea class="form-textarea" id="inc-descripcion" placeholder="Explica qué sucedió, cuándo, dónde..."></textarea>
+                    <textarea class="form-textarea" id="inc-descripcion" 
+                              placeholder="Describe qué sucedió...">Se detectaron puntos fríos en el cordón de soldadura durante la inspección de calidad. Afecta aproximadamente 15% de las piezas del turno matutino. La temperatura ambiente era de 18°C.</textarea>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Área</label>
                         <select class="form-select" id="inc-area">
-                            <option value="">Selecciona...</option>
                             <option value="Producción">Producción</option>
-                            <option value="Calidad">Calidad</option>
+                            <option value="Calidad" selected>Calidad</option>
                             <option value="Mantenimiento">Mantenimiento</option>
-                            <option value="Ingeniería">Ingeniería</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Prioridad</label>
                         <select class="form-select" id="inc-prioridad">
-                            <option value="baja">Baja</option>
-                            <option value="media" selected>Media</option>
-                            <option value="alta">Alta</option>
+                            <option value="media">Media</option>
+                            <option value="alta" selected>Alta</option>
                             <option value="critica">Crítica</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Tu nombre</label>
-                    <input type="text" class="form-input" id="inc-autor" placeholder="¿Quién reporta?">
+                    <label class="form-label">Reportado por</label>
+                    <input type="text" class="form-input" id="inc-autor" value="Juan Pérez" placeholder="Tu nombre">
                 </div>
+
+                <!-- Aquí aparecerán los casos similares -->
+                <div id="casos-similares-container"></div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="cerrarModal('modal-nueva-incidencia')">Cancelar</button>
+                <button class="btn btn-secondary" onclick="cerrarModal('modal-nueva')">Cancelar</button>
                 <button class="btn btn-primary" onclick="crearIncidencia()">Crear Incidencia</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal Detalle Incidencia -->
-    <div class="modal-overlay" id="modal-detalle-incidencia">
+    <!-- ============================================================
+         MODAL: Detalle Incidencia
+         ============================================================ -->
+    <div class="modal-overlay" id="modal-detalle">
         <div class="modal" style="max-width: 750px;">
             <div class="modal-header">
                 <h2 class="modal-title" id="detalle-titulo">Detalle</h2>
-                <button class="modal-close" onclick="cerrarModal('modal-detalle-incidencia')">&times;</button>
+                <button class="modal-close" onclick="cerrarModal('modal-detalle')">&times;</button>
             </div>
             <div class="modal-body" id="detalle-contenido"></div>
-            <div class="modal-footer" id="detalle-acciones"></div>
+            <div class="modal-footer" id="detalle-footer"></div>
         </div>
     </div>
 
+    <!-- Toast Container -->
     <div class="toast-container" id="toast-container"></div>
 
+    <!-- ============================================================
+         JAVASCRIPT
+         ============================================================ -->
     <script>
-        const API_BASE = '/api';
-        let providerSeleccionado = 'ollama';
+        // ============================================================
+        // DATOS SIMULADOS (RAG)
+        // ============================================================
+        const ragDocumentos = [
+            { tipo: 'ISO', nombre: 'ISO-9001-Procedimiento-Soldadura.pdf', fecha: '2024-01-15' },
+            { tipo: 'Manual', nombre: 'Manual-Máquina-Soldadora-Lincoln.pdf', fecha: '2024-02-20' },
+            { tipo: 'Caso', nombre: 'Caso #12 - Punto frío por temperatura baja', fecha: '2024-03-10' },
+            { tipo: 'Caso', nombre: 'Caso #18 - Falla soldadura por gas contaminado', fecha: '2024-05-22' },
+            { tipo: 'Caso', nombre: 'Caso #21 - Parámetros incorrectos línea 2', fecha: '2024-06-15' },
+            { tipo: '8D', nombre: '8D-2024-007-Defectos-Soldadura.pdf', fecha: '2024-04-08' },
+            { tipo: 'Capacitación', nombre: 'Curso-Soldadura-MIG-MAG.pdf', fecha: '2023-11-30' },
+        ];
 
-        // Navegación
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const pagina = item.dataset.page;
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                document.getElementById(`page-${pagina}`).classList.add('active');
-                
-                if (pagina === 'dashboard' || pagina === 'incidencias') cargarIncidencias();
-                else if (pagina === 'documentos') cargarDocumentos();
-                else if (pagina === 'configuracion') cargarConfiguracion();
-            });
-        });
-
-        // Toast
-        function mostrarToast(mensaje, tipo = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${tipo}`;
-            toast.innerHTML = `<span>${tipo === 'success' ? '✓' : '✕'}</span><span>${mensaje}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
-        }
-
-        // Modales
-        function abrirModal(id) { document.getElementById(id).classList.add('active'); }
-        function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
-        
-        function abrirNuevaIncidencia() {
-            ['inc-titulo', 'inc-descripcion', 'inc-autor'].forEach(id => document.getElementById(id).value = '');
-            document.getElementById('inc-area').value = '';
-            document.getElementById('inc-prioridad').value = 'media';
-            abrirModal('modal-nueva-incidencia');
-        }
-
-        // Incidencias
-        async function cargarIncidencias() {
-            try {
-                const response = await fetch(`${API_BASE}/incidencias`);
-                const incidencias = await response.json();
-                renderizarIncidencias(incidencias, 'lista-incidencias');
-                renderizarIncidencias(incidencias.slice(0, 5), 'dashboard-incidencias');
-                document.getElementById('stat-resueltos').textContent = incidencias.filter(i => i.estado === 'resuelto').length;
-            } catch (error) {
-                console.error('Error:', error);
-                ['lista-incidencias', 'dashboard-incidencias'].forEach(id => {
-                    document.getElementById(id).innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><div class="empty-state-title">Error de conexión</div><p>Verifica que el backend esté corriendo</p></div>';
-                });
+        const casosSimilares = [
+            {
+                titulo: 'Caso #12 - Punto frío por temperatura ambiente baja',
+                fecha: '10 Mar 2024',
+                area: 'Calidad',
+                resumen: 'Se detectaron puntos fríos cuando la temperatura ambiente bajó de 15°C. Se resolvió ajustando la temperatura de precalentamiento de 180°C a 200°C.',
+                solucion: 'Aumentar temperatura de precalentamiento a 200°C cuando ambiente < 18°C'
+            },
+            {
+                titulo: 'Caso #18 - Soldadura deficiente por gas contaminado',
+                fecha: '22 May 2024',
+                area: 'Producción',
+                resumen: 'Puntos fríos y porosidad en cordón. Se identificó humedad en el gas de protección. Cambio de cilindro resolvió el problema.',
+                solucion: 'Verificar certificado de pureza del gas y revisar mangueras'
+            },
+            {
+                titulo: 'Caso #21 - Parámetros de soldadora descalibrados',
+                fecha: '15 Jun 2024',
+                area: 'Mantenimiento',
+                resumen: 'Voltaje real 2V menor al indicado en display. Calibración del equipo corrigió el defecto.',
+                solucion: 'Calibrar equipo cada 3 meses o después de 1000 horas de uso'
             }
+        ];
+
+        const incidenciasExistentes = [
+            { id: 1, titulo: 'Vibración excesiva en CNC-05', area: 'Mantenimiento', estado: 'resuelto', prioridad: 'alta', fecha: '2024-11-28' },
+            { id: 2, titulo: 'Dimensiones fuera de tolerancia lote #4521', area: 'Calidad', estado: 'en_proceso', prioridad: 'media', fecha: '2024-12-01' },
+            { id: 3, titulo: 'Fuga de aceite prensa hidráulica', area: 'Mantenimiento', estado: 'abierto', prioridad: 'alta', fecha: '2024-12-03' },
+        ];
+
+        const respuestasChat = {
+            'soldadura': `Encontré **4 casos relacionados con soldadura** en la base de conocimiento:\n\n1. **Caso #12** - Punto frío por temperatura baja (Resuelto)\n   → Solución: Aumentar precalentamiento a 200°C\n\n2. **Caso #18** - Gas contaminado (Resuelto)\n   → Solución: Verificar pureza del gas\n\n3. **Caso #21** - Parámetros descalibrados (Resuelto)\n   → Solución: Calibrar equipo cada 3 meses\n\n4. **Caso #7** - Electrodo incorrecto (Resuelto)\n   → Solución: Usar ER70S-6 para acero al carbono\n\n📊 **Patrón detectado:** El 60% de los problemas de soldadura están relacionados con temperatura (ambiente o precalentamiento).`,
+            
+            'temperatura': `Analizando casos relacionados con **temperatura**:\n\n🌡️ **Hallazgos clave:**\n\n• Cuando la temperatura ambiente baja de **18°C**, aumenta 40% la probabilidad de defectos\n• La temperatura de precalentamiento óptima es **200°C** (no 180°C como indica el manual antiguo)\n• Se recomienda monitorear temperatura cada **2 horas** en turno nocturno\n\n📋 **Casos relacionados:** #12, #15, #23\n\n💡 **Recomendación:** Instalar termómetro digital en estación de soldadura.`,
+            
+            'línea 3': `Información sobre **Línea 3**:\n\n📊 **Estadísticas últimos 6 meses:**\n• Total de incidencias: **8**\n• Resueltas: 7\n• Tiempo promedio de resolución: 4.2 horas\n\n🔧 **Problemas más frecuentes:**\n1. Soldadura (3 casos)\n2. Vibración (2 casos)\n3. Calibración (2 casos)\n4. Electrical (1 caso)\n\n⚠️ **Alerta:** Se detecta tendencia creciente en problemas de soldadura. Última revisión de parámetros hace 45 días.`,
+            
+            'default': `He buscado en la base de conocimiento y encontré información relevante.\n\n📚 **Documentos consultados:** 7\n📋 **Casos analizados:** 23\n\nPuedo ayudarte con información más específica si me indicas:\n• Un área específica (Calidad, Mantenimiento, Producción)\n• Un tipo de problema (soldadura, vibración, dimensiones)\n• Una máquina o línea específica\n\n¿Qué te gustaría saber?`
+        };
+
+        // ============================================================
+        // FUNCIONES DE NAVEGACIÓN
+        // ============================================================
+        function iniciarDemo() {
+            document.getElementById('landing-screen').style.display = 'none';
+            document.getElementById('install-screen').style.display = 'block';
+            simularInstalacion();
         }
 
-        function renderizarIncidencias(incidencias, containerId) {
-            const container = document.getElementById(containerId);
-            if (!incidencias.length) {
-                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-title">No hay incidencias</div><p>Crea la primera incidencia</p></div>';
-                return;
-            }
-            container.innerHTML = incidencias.map(inc => `
-                <div class="incidencia-item" onclick="verIncidencia('${inc.id}')">
+        function simularInstalacion() {
+            const lineas = [
+                { texto: 'git clone https://github.com/srexcel/PR.git', tipo: 'command' },
+                { texto: 'Cloning into \'PR\'...', tipo: 'output' },
+                { texto: 'remote: Enumerating objects: 47, done.', tipo: 'output' },
+                { texto: 'Receiving objects: 100% (47/47), done.', tipo: 'success' },
+                { texto: '', tipo: 'output' },
+                { texto: 'cd PR && pip install -r backend/requirements.txt', tipo: 'command' },
+                { texto: 'Collecting fastapi==0.115.0', tipo: 'output' },
+                { texto: 'Collecting chromadb==0.5.23', tipo: 'output' },
+                { texto: 'Collecting uvicorn==0.30.6', tipo: 'output' },
+                { texto: 'Installing collected packages...', tipo: 'output' },
+                { texto: 'Successfully installed 12 packages', tipo: 'success' },
+                { texto: '', tipo: 'output' },
+                { texto: 'python -m uvicorn main:app --port 8000', tipo: 'command' },
+                { texto: 'INFO:     Started server process [12847]', tipo: 'info' },
+                { texto: 'INFO:     Uvicorn running on http://0.0.0.0:8000', tipo: 'info' },
+                { texto: '', tipo: 'output' },
+                { texto: '✓ PR-System iniciado correctamente', tipo: 'success' },
+                { texto: '✓ Base de conocimiento: 7 documentos cargados', tipo: 'success' },
+                { texto: '✓ LLM conectado: Ollama (llama3)', tipo: 'success' },
+            ];
+
+            const terminal = document.getElementById('terminal-body');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < lineas.length) {
+                    const linea = lineas[i];
+                    const div = document.createElement('div');
+                    div.className = `terminal-line ${linea.tipo}`;
+                    div.textContent = linea.texto;
+                    div.style.animationDelay = '0s';
+                    terminal.appendChild(div);
+                    terminal.scrollTop = terminal.scrollHeight;
+
+                    const progress = ((i + 1) / lineas.length) * 100;
+                    progressFill.style.width = progress + '%';
+                    
+                    if (progress < 30) progressText.textContent = 'Clonando repositorio...';
+                    else if (progress < 60) progressText.textContent = 'Instalando dependencias...';
+                    else if (progress < 90) progressText.textContent = 'Iniciando servidor...';
+                    else progressText.textContent = '¡Listo!';
+
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('install-screen').style.display = 'none';
+                        document.getElementById('app-screen').style.display = 'block';
+                        inicializarApp();
+                    }, 1500);
+                }
+            }, 200);
+        }
+
+        function navegarA(pagina) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelector(`[data-page="${pagina}"]`).classList.add('active');
+            
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${pagina}`).classList.add('active');
+        }
+
+        // ============================================================
+        // FUNCIONES DE LA APP
+        // ============================================================
+        function inicializarApp() {
+            renderizarIncidencias();
+            renderizarDocumentos();
+            mostrarToast('Sistema PR-System cargado correctamente', 'success');
+        }
+
+        function renderizarIncidencias() {
+            const html = incidenciasExistentes.map(inc => `
+                <div class="incidencia-item" onclick="verIncidencia(${inc.id})">
                     <div class="incidencia-header">
                         <div>
                             <div class="incidencia-titulo">${inc.titulo}</div>
                             <div class="incidencia-meta">
-                                <span>📅 ${new Date(inc.fecha_creacion).toLocaleDateString('es-MX')}</span>
-                                ${inc.area ? `<span>📍 ${inc.area}</span>` : ''}
+                                <span>📅 ${inc.fecha}</span>
+                                <span>📍 ${inc.area}</span>
                             </div>
                         </div>
                         <div class="incidencia-badges">
@@ -575,317 +1249,305 @@
                     </div>
                 </div>
             `).join('');
+
+            document.getElementById('lista-dashboard').innerHTML = html;
+            document.getElementById('lista-incidencias').innerHTML = html;
         }
 
-        async function crearIncidencia() {
-            const datos = {
-                titulo: document.getElementById('inc-titulo').value,
-                descripcion: document.getElementById('inc-descripcion').value,
-                area: document.getElementById('inc-area').value || null,
-                prioridad: document.getElementById('inc-prioridad').value,
-                creado_por: document.getElementById('inc-autor').value || null
-            };
-            if (!datos.titulo || !datos.descripcion) { mostrarToast('Completa título y descripción', 'error'); return; }
+        function renderizarDocumentos() {
+            const iconos = { 'ISO': '📋', 'Manual': '📖', 'Caso': '✅', '8D': '🔍', 'Capacitación': '🎓' };
             
-            try {
-                const response = await fetch(`${API_BASE}/incidencias`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(datos)
-                });
-                const resultado = await response.json();
-                cerrarModal('modal-nueva-incidencia');
-                mostrarToast('Incidencia creada');
-                if (resultado.casos_similares?.length > 0) {
-                    setTimeout(() => alert(`¡Encontramos ${resultado.casos_similares.length} casos similares!`), 300);
-                }
-                cargarIncidencias();
-            } catch (error) {
-                mostrarToast('Error al crear', 'error');
-            }
+            document.getElementById('lista-documentos').innerHTML = ragDocumentos.map(doc => `
+                <div class="doc-item">
+                    <div class="doc-icon">${iconos[doc.tipo] || '📄'}</div>
+                    <div class="doc-info">
+                        <div class="doc-name">${doc.nombre}</div>
+                        <div class="doc-meta">${doc.tipo} • ${doc.fecha}</div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        async function verIncidencia(id) {
-            try {
-                const response = await fetch(`${API_BASE}/incidencias/${id}`);
-                const { incidencia, reportes } = await response.json();
-                
-                document.getElementById('detalle-titulo').textContent = incidencia.titulo;
-                
-                let html = `
-                    <div style="margin-bottom: 20px;">
-                        <div class="incidencia-badges" style="margin-bottom: 14px;">
-                            <span class="badge badge-estado-${incidencia.estado}">${incidencia.estado.replace('_', ' ')}</span>
-                            <span class="badge badge-prioridad-${incidencia.prioridad}">${incidencia.prioridad}</span>
-                            ${incidencia.area ? `<span class="badge" style="background: var(--bg-tertiary);">📍 ${incidencia.area}</span>` : ''}
+        // ============================================================
+        // MODAL: Nueva Incidencia
+        // ============================================================
+        function abrirNuevaIncidencia() {
+            document.getElementById('casos-similares-container').innerHTML = '';
+            abrirModal('modal-nueva');
+            
+            // Simular búsqueda de casos similares después de 1.5 segundos
+            setTimeout(() => {
+                mostrarCasosSimilares();
+            }, 1500);
+        }
+
+        function mostrarCasosSimilares() {
+            const container = document.getElementById('casos-similares-container');
+            
+            container.innerHTML = `
+                <div class="casos-similares">
+                    <div class="casos-similares-title">
+                        <span>🔍</span> 
+                        <span>¡Encontré ${casosSimilares.length} casos similares en el RAG!</span>
+                    </div>
+                    ${casosSimilares.map(caso => `
+                        <div class="caso-similar-item">
+                            <div class="caso-similar-header">${caso.titulo}</div>
+                            <div class="caso-similar-meta">📅 ${caso.fecha} • 📍 ${caso.area}</div>
+                            <div>${caso.resumen}</div>
+                            <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-color); color: var(--accent-secondary); font-weight: 500;">
+                                💡 Solución: ${caso.solucion}
+                            </div>
                         </div>
-                        <p style="color: var(--text-secondary); font-size: 13px;">
-                            Creado el ${new Date(incidencia.fecha_creacion).toLocaleString('es-MX')}
-                            ${incidencia.creado_por ? ` por ${incidencia.creado_por}` : ''}
-                        </p>
+                    `).join('')}
+                </div>
+            `;
+
+            mostrarToast('Sistema encontró 3 casos similares', 'info');
+        }
+
+        function crearIncidencia() {
+            cerrarModal('modal-nueva');
+            
+            // Agregar la nueva incidencia a la lista
+            const nueva = {
+                id: incidenciasExistentes.length + 1,
+                titulo: document.getElementById('inc-titulo').value,
+                area: document.getElementById('inc-area').value,
+                estado: 'abierto',
+                prioridad: document.getElementById('inc-prioridad').value,
+                fecha: new Date().toISOString().split('T')[0]
+            };
+            
+            incidenciasExistentes.unshift(nueva);
+            renderizarIncidencias();
+            
+            mostrarToast('Incidencia creada exitosamente', 'success');
+            
+            setTimeout(() => {
+                mostrarToast('El sistema sugiere revisar la temperatura de precalentamiento', 'info');
+            }, 2000);
+        }
+
+        // ============================================================
+        // MODAL: Detalle Incidencia
+        // ============================================================
+        function verIncidencia(id) {
+            const inc = incidenciasExistentes.find(i => i.id === id);
+            
+            document.getElementById('detalle-titulo').textContent = inc.titulo;
+            
+            document.getElementById('detalle-contenido').innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <div class="incidencia-badges" style="margin-bottom: 14px;">
+                        <span class="badge badge-estado-${inc.estado}">${inc.estado.replace('_', ' ')}</span>
+                        <span class="badge badge-prioridad-${inc.prioridad}">${inc.prioridad}</span>
+                        <span class="badge" style="background: var(--bg-tertiary);">📍 ${inc.area}</span>
                     </div>
-                    <div style="margin-bottom: 20px;">
-                        <h4 style="margin-bottom: 10px; color: var(--text-muted); font-size: 11px; text-transform: uppercase;">Descripción</h4>
-                        <p style="line-height: 1.7;">${incidencia.descripcion}</p>
+                    <p style="color: var(--text-secondary); font-size: 13px;">
+                        Creado el ${inc.fecha}
+                    </p>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 14px; color: var(--text-muted); font-size: 11px; text-transform: uppercase;">
+                        Reportes de Involucrados
+                    </h4>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-autor">Carlos García</div>
+                            <div class="timeline-fecha">Hace 2 días</div>
+                            <div class="timeline-contenido">
+                                Detecté el problema durante la inspección de las 10am. Las piezas afectadas están marcadas con etiqueta roja.
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-autor">María López</div>
+                            <div class="timeline-fecha">Hace 1 día</div>
+                            <div class="timeline-contenido">
+                                Revisé los parámetros de la máquina. El voltaje estaba 2V por debajo de lo especificado. Ajusté según el caso #21 del sistema.
+                            </div>
+                        </div>
                     </div>
+                </div>
+
+                ${inc.estado === 'resuelto' ? `
+                    <div style="padding: 18px; background: rgba(16, 185, 129, 0.1); border-radius: var(--radius-md); border: 1px solid rgba(16, 185, 129, 0.2);">
+                        <h4 style="margin-bottom: 10px; color: var(--accent-secondary); font-size: 11px; text-transform: uppercase;">✓ Solución Aplicada</h4>
+                        <p>Se calibró el equipo y se aumentó la temperatura de precalentamiento. El caso fue agregado al RAG para referencia futura.</p>
+                    </div>
+                ` : ''}
+            `;
+
+            document.getElementById('detalle-footer').innerHTML = `
+                <button class="btn btn-secondary" onclick="cerrarModal('modal-detalle')">Cerrar</button>
+                ${inc.estado !== 'resuelto' ? `
+                    <button class="btn btn-success" onclick="resolverIncidencia(${inc.id})">Marcar Resuelto</button>
+                ` : ''}
+                <button class="btn btn-primary" onclick="generarDocumento()">Generar Documento</button>
+            `;
+
+            abrirModal('modal-detalle');
+        }
+
+        function resolverIncidencia(id) {
+            const inc = incidenciasExistentes.find(i => i.id === id);
+            inc.estado = 'resuelto';
+            
+            cerrarModal('modal-detalle');
+            renderizarIncidencias();
+            
+            const resueltos = parseInt(document.getElementById('stat-resueltos').textContent);
+            document.getElementById('stat-resueltos').textContent = resueltos + 1;
+            
+            mostrarToast('Incidencia resuelta y agregada al RAG', 'success');
+        }
+
+        function generarDocumento() {
+            mostrarToast('Generando documento con IA...', 'info');
+            
+            setTimeout(() => {
+                const doc = `
+═══════════════════════════════════════════════════════════════
+                    DOCUMENTO DE RESOLUCIÓN DE INCIDENCIA
+                           PR-System v1.0
+═══════════════════════════════════════════════════════════════
+
+RESUMEN EJECUTIVO
+─────────────────
+Se detectó un problema de puntos fríos en soldadura en la línea 3
+durante el turno matutino. El problema fue identificado, analizado
+y resuelto en un tiempo de 48 horas.
+
+DESCRIPCIÓN DEL PROBLEMA
+────────────────────────
+• Síntoma: Puntos fríos en cordón de soldadura
+• Ubicación: Línea 3, estación de soldadura MIG
+• Afectación: 15% de piezas del turno matutino
+• Detección: Inspección de calidad visual
+
+ANÁLISIS DE CAUSAS
+──────────────────
+Basado en el histórico del sistema PR (casos #12, #18, #21):
+
+1. Temperatura ambiente baja (18°C vs 22°C recomendado)
+2. Temperatura de precalentamiento insuficiente (180°C)
+3. Último calibrado del equipo hace 45 días
+
+SOLUCIÓN APLICADA
+─────────────────
+✓ Ajuste de temperatura de precalentamiento: 180°C → 200°C
+✓ Calibración del equipo de soldadura
+✓ Instalación de termómetro digital en estación
+
+LECCIONES APRENDIDAS
+────────────────────
+Este caso confirma el patrón detectado por el sistema:
+"El 60% de los problemas de soldadura están relacionados
+con temperatura ambiente o de precalentamiento"
+
+RECOMENDACIONES
+───────────────
+• Monitorear temperatura cada 2 horas en turno nocturno
+• Calibrar equipo cada 3 meses o 1000 horas de uso
+• Actualizar procedimiento ISO con nuevos parámetros
+
+═══════════════════════════════════════════════════════════════
+Generado automáticamente por PR-System
+Fecha: ${new Date().toLocaleDateString('es-MX')}
+═══════════════════════════════════════════════════════════════
                 `;
                 
-                if (reportes.length > 0) {
-                    html += `<div style="margin-bottom: 20px;">
-                        <h4 style="margin-bottom: 14px; color: var(--text-muted); font-size: 11px; text-transform: uppercase;">Reportes</h4>
-                        <div class="timeline">
-                            ${reportes.map(r => `
-                                <div class="timeline-item">
-                                    <div class="timeline-autor">${r.autor}</div>
-                                    <div class="timeline-fecha">${new Date(r.fecha).toLocaleString('es-MX')}</div>
-                                    <div class="timeline-contenido">${r.contenido}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>`;
-                }
-                
-                if (incidencia.solucion) {
-                    html += `<div style="padding: 18px; background: rgba(16, 185, 129, 0.1); border-radius: var(--radius-md); border: 1px solid rgba(16, 185, 129, 0.2); margin-bottom: 20px;">
-                        <h4 style="margin-bottom: 10px; color: var(--accent-secondary); font-size: 11px; text-transform: uppercase;">✓ Solución</h4>
-                        <p style="line-height: 1.7;">${incidencia.solucion}</p>
-                    </div>`;
-                }
-                
-                if (incidencia.estado !== 'cerrado' && incidencia.estado !== 'resuelto') {
-                    html += `<div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
-                        <h4 style="margin-bottom: 14px;">Agregar Reporte</h4>
-                        <div class="form-group"><label class="form-label">Tu nombre</label><input type="text" class="form-input" id="reporte-autor"></div>
-                        <div class="form-group"><label class="form-label">Tu versión</label><textarea class="form-textarea" id="reporte-contenido"></textarea></div>
-                        <button class="btn btn-secondary" onclick="agregarReporte('${id}')">Agregar Reporte</button>
-                    </div>`;
-                }
-                
-                document.getElementById('detalle-contenido').innerHTML = html;
-                
-                let acciones = `<button class="btn btn-secondary" onclick="cerrarModal('modal-detalle-incidencia')">Cerrar</button>`;
-                if (incidencia.estado !== 'resuelto' && incidencia.estado !== 'cerrado') {
-                    acciones += `<button class="btn btn-success" onclick="abrirResolver('${id}')">Marcar Resuelto</button>`;
-                }
-                if (incidencia.estado === 'resuelto' || incidencia.estado === 'abierto') {
-                    acciones += `<button class="btn btn-primary" onclick="generarDocumento('${id}')">Generar Documento</button>`;
-                }
-                document.getElementById('detalle-acciones').innerHTML = acciones;
-                
-                abrirModal('modal-detalle-incidencia');
-            } catch (error) {
-                mostrarToast('Error cargando detalle', 'error');
-            }
-        }
-
-        async function agregarReporte(incidenciaId) {
-            const autor = document.getElementById('reporte-autor').value;
-            const contenido = document.getElementById('reporte-contenido').value;
-            if (!autor || !contenido) { mostrarToast('Completa los campos', 'error'); return; }
-            
-            try {
-                await fetch(`${API_BASE}/incidencias/${incidenciaId}/reportes`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ autor, contenido })
-                });
-                mostrarToast('Reporte agregado');
-                verIncidencia(incidenciaId);
-            } catch (error) {
-                mostrarToast('Error', 'error');
-            }
-        }
-
-        function abrirResolver(id) {
-            const solucion = prompt('Describe la solución aplicada:');
-            if (solucion) resolverIncidencia(id, solucion);
-        }
-
-        async function resolverIncidencia(id, solucion) {
-            try {
-                await fetch(`${API_BASE}/incidencias/${id}/resolver`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ solucion, agregar_a_rag: true })
-                });
-                mostrarToast('Incidencia resuelta y agregada al RAG');
-                cerrarModal('modal-detalle-incidencia');
-                cargarIncidencias();
-                actualizarStats();
-            } catch (error) {
-                mostrarToast('Error', 'error');
-            }
-        }
-
-        async function generarDocumento(id) {
-            mostrarToast('Generando documento con IA...');
-            try {
-                const response = await fetch(`${API_BASE}/incidencias/${id}/generar-documento`, { method: 'POST' });
-                const { documento } = await response.json();
                 const win = window.open('', '_blank');
-                win.document.write(`<pre style="font-family: sans-serif; padding: 20px; line-height: 1.8;">${documento}</pre>`);
-            } catch (error) {
-                mostrarToast('Error generando documento', 'error');
-            }
+                win.document.write(`<pre style="font-family: 'JetBrains Mono', monospace; padding: 30px; background: #0a0e14; color: #e6edf5; line-height: 1.6;">${doc}</pre>`);
+                
+                mostrarToast('Documento generado exitosamente', 'success');
+            }, 2000);
         }
 
-        // Chat / Consultar RAG
-        async function enviarConsulta() {
+        // ============================================================
+        // CHAT
+        // ============================================================
+        function enviarConsulta() {
             const input = document.getElementById('chat-input');
             const pregunta = input.value.trim();
             if (!pregunta) return;
-            
+
             const messages = document.getElementById('chat-messages');
-            messages.innerHTML += `<div class="message message-user"><div class="message-label">Tú</div><div class="message-content">${pregunta}</div></div>`;
+            
+            // Mensaje del usuario
+            messages.innerHTML += `
+                <div class="message message-user">
+                    <div class="message-label">Tú</div>
+                    <div class="message-content">${pregunta}</div>
+                </div>
+            `;
+            
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
-            
-            messages.innerHTML += `<div class="message message-assistant" id="msg-loading"><div class="message-label">Sistema PR</div><div class="message-content"><div class="loading" style="padding: 10px;"><div class="spinner"></div><span>Buscando...</span></div></div></div>`;
-            
-            try {
-                const response = await fetch(`${API_BASE}/rag/consultar`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ pregunta, n_resultados: 5 })
-                });
-                const { respuesta, casos_similares } = await response.json();
-                
-                document.getElementById('msg-loading').remove();
-                
-                let html = `<div class="message message-assistant"><div class="message-label">Sistema PR</div><div class="message-content">${respuesta.replace(/\n/g, '<br>')}`;
-                if (casos_similares?.length > 0) {
-                    html += `<div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-muted);">📚 Basado en ${casos_similares.length} caso(s) similares encontrados</div>`;
-                }
-                html += `</div></div>`;
-                messages.innerHTML += html;
-                messages.scrollTop = messages.scrollHeight;
-            } catch (error) {
-                document.getElementById('msg-loading').remove();
-                messages.innerHTML += `<div class="message message-assistant"><div class="message-label">Sistema PR</div><div class="message-content" style="color: var(--accent-warning);">Error al consultar. Verifica la conexión.</div></div>`;
-            }
-        }
 
-        // Documentos
-        async function cargarDocumentos() {
-            try {
-                const response = await fetch(`${API_BASE}/rag/documentos`);
-                const { documentos, incidencias_en_rag, total } = await response.json();
-                
-                document.getElementById('stat-documentos').textContent = total;
-                
-                const container = document.getElementById('lista-documentos');
-                const items = [
-                    ...documentos.map(d => ({ tipo: 'doc', ...d })),
-                    ...incidencias_en_rag.map(i => ({ tipo: 'inc', ...i }))
-                ];
-                
-                if (!items.length) {
-                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📁</div><div class="empty-state-title">Sin documentos</div><p>Sube documentos o resuelve incidencias</p></div>';
-                    return;
-                }
-                
-                container.innerHTML = items.map(item => `
-                    <div class="doc-item">
-                        <div class="doc-icon">${item.tipo === 'doc' ? '📄' : '✅'}</div>
-                        <div class="doc-info">
-                            <div class="doc-name">${item.nombre || item.titulo}</div>
-                            <div class="doc-meta">${item.tipo === 'doc' ? item.tipo : 'Caso resuelto'} • ${new Date(item.fecha_subida || item.fecha_creacion).toLocaleDateString('es-MX')}</div>
+            // Indicador de escritura
+            messages.innerHTML += `
+                <div class="message message-assistant" id="typing-msg">
+                    <div class="message-label">Sistema PR</div>
+                    <div class="message-content">
+                        <div class="typing-indicator">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
                         </div>
                     </div>
-                `).join('');
-            } catch (error) {
-                document.getElementById('lista-documentos').innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><div class="empty-state-title">Error</div></div>';
-            }
+                </div>
+            `;
+            messages.scrollTop = messages.scrollHeight;
+
+            // Simular respuesta
+            setTimeout(() => {
+                document.getElementById('typing-msg').remove();
+                
+                let respuesta = respuestasChat.default;
+                const preguntaLower = pregunta.toLowerCase();
+                
+                if (preguntaLower.includes('soldadura') || preguntaLower.includes('soldar')) {
+                    respuesta = respuestasChat.soldadura;
+                } else if (preguntaLower.includes('temperatura') || preguntaLower.includes('caliente') || preguntaLower.includes('frío')) {
+                    respuesta = respuestasChat.temperatura;
+                } else if (preguntaLower.includes('línea 3') || preguntaLower.includes('linea 3')) {
+                    respuesta = respuestasChat['línea 3'];
+                }
+
+                messages.innerHTML += `
+                    <div class="message message-assistant">
+                        <div class="message-label">Sistema PR</div>
+                        <div class="message-content">${respuesta.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+                    </div>
+                `;
+                messages.scrollTop = messages.scrollHeight;
+            }, 1500);
         }
 
-        async function subirDocumento(archivo) {
-            if (!archivo) return;
-            const formData = new FormData();
-            formData.append('archivo', archivo);
-            formData.append('titulo', archivo.name);
-            formData.append('tipo', 'documento');
-            
-            try {
-                await fetch(`${API_BASE}/rag/agregar-documento`, { method: 'POST', body: formData });
-                mostrarToast('Documento subido');
-                cargarDocumentos();
-            } catch (error) {
-                mostrarToast('Error subiendo', 'error');
-            }
+        // ============================================================
+        // UTILIDADES
+        // ============================================================
+        function abrirModal(id) {
+            document.getElementById(id).classList.add('active');
         }
 
-        // Configuración
-        function seleccionarProvider(provider) {
-            providerSeleccionado = provider;
-            document.querySelectorAll('.provider-card').forEach(c => c.classList.remove('selected'));
-            document.querySelector(`[data-provider="${provider}"]`).classList.add('selected');
-            
-            document.getElementById('config-ollama').style.display = provider === 'ollama' ? 'block' : 'none';
-            document.getElementById('config-cloud').style.display = provider !== 'ollama' ? 'block' : 'none';
+        function cerrarModal(id) {
+            document.getElementById(id).classList.remove('active');
         }
 
-        async function cargarConfiguracion() {
-            try {
-                const response = await fetch(`${API_BASE}/configuracion`);
-                const config = await response.json();
-                seleccionarProvider(config.llm_provider);
-                document.getElementById('ollama-url').value = config.ollama_url || 'http://localhost:11434';
-                document.getElementById('ollama-model').value = config.llm_model || 'llama3';
-            } catch (error) {}
+        function mostrarToast(mensaje, tipo = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${tipo}`;
+            toast.innerHTML = `
+                <span>${tipo === 'success' ? '✓' : tipo === 'info' ? 'ℹ' : '!'}</span>
+                <span>${mensaje}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
         }
-
-        async function guardarConfiguracion() {
-            const datos = { provider: providerSeleccionado };
-            
-            if (providerSeleccionado === 'ollama') {
-                datos.model = document.getElementById('ollama-model').value;
-                datos.ollama_url = document.getElementById('ollama-url').value;
-            } else {
-                datos.model = document.getElementById('cloud-model').value;
-                datos.api_key = document.getElementById('api-key').value;
-            }
-            
-            try {
-                await fetch(`${API_BASE}/configuracion`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(datos)
-                });
-                mostrarToast('Configuración guardada');
-            } catch (error) {
-                mostrarToast('Error', 'error');
-            }
-        }
-
-        async function probarConexion() {
-            mostrarToast('Probando conexión...');
-            try {
-                const response = await fetch(`${API_BASE}/configuracion/test-llm`);
-                const { exito, respuesta } = await response.json();
-                if (exito) mostrarToast('¡Conexión exitosa!');
-                else mostrarToast(respuesta, 'error');
-            } catch (error) {
-                mostrarToast('Error de conexión', 'error');
-            }
-        }
-
-        async function actualizarStats() {
-            try {
-                const response = await fetch(`${API_BASE}/rag/stats`);
-                const { total_documentos } = await response.json();
-                document.getElementById('stat-documentos').textContent = total_documentos;
-            } catch (error) {}
-        }
-
-        // Drag & Drop
-        const uploadZone = document.getElementById('upload-zone');
-        uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
-        uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
-        uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('dragover'); if (e.dataTransfer.files[0]) subirDocumento(e.dataTransfer.files[0]); });
-
-        // Init
-        cargarIncidencias();
-        actualizarStats();
     </script>
 </body>
 </html>
