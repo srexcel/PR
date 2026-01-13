@@ -1,0 +1,20 @@
+# PR-System Backend Dependencies
+# ================================
+
+# Framework web (como el "servidor" que recibe peticiones)
+fastapi==0.115.0
+uvicorn==0.30.6
+
+# Base de datos de vectores (para el RAG)
+chromadb==0.5.23
+
+# Cliente HTTP (para llamar a APIs de LLM)
+httpx==0.27.0
+
+# Utilidades
+python-multipart==0.0.9
+pydantic==2.8.2
+
+# Procesamiento de documentos (opcional, para PDFs y Word)
+# PyPDF2==3.0.1
+# python-docx==1.1.0

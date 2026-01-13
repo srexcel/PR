@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR-System | Sistema de Conocimiento Vivo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e14;
+            --bg-secondary: #111820;
+            --bg-tertiary: #1a222d;
+            --bg-card: #151c25;
+            --text-primary: #e6edf5;
+            --text-secondary: #8898aa;
+            --text-muted: #5a6977;
+            --accent-primary: #f59e0b;
+            --accent-secondary: #10b981;
+            --accent-warning: #ef4444;
+            --accent-info: #3b82f6;
+            --border-color: #2a3544;
+            --border-subtle: #1e2733;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --transition: 0.2s ease;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .app-container { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            position: fixed;
+            width: 260px;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+        .logo-icon {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--accent-primary), #d97706);
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: 700; color: var(--bg-primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .logo-title { font-size: 18px; font-weight: 700; }
+        .logo-subtitle { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        
+        .nav-section { margin-bottom: 20px; }
+        .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 10px; padding-left: 12px; }
+        .nav-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 11px 14px; border-radius: var(--radius-md);
+            cursor: pointer; transition: var(--transition);
+            color: var(--text-secondary); font-weight: 500; margin-bottom: 4px;
+        }
+        .nav-item:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.1));
+            color: var(--accent-primary); border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .nav-icon { font-size: 16px; width: 22px; text-align: center; }
+        
+        .sidebar-stats { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-color); }
+        .stat-card { background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 14px; margin-bottom: 10px; }
+        .stat-label { font-size: 11px; color: var(--text-muted); margin-bottom: 2px; }
+        .stat-value { font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--accent-primary); }
+        
+        /* Main Content */
+        .main-content { margin-left: 260px; padding: 28px; min-height: 100vh; }
+        .page { display: none; animation: fadeIn 0.3s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .page-header { margin-bottom: 28px; }
+        .page-title { font-size: 28px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.5px; }
+        .page-description { color: var(--text-secondary); font-size: 15px; }
+        
+        /* Cards */
+        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px; margin-bottom: 22px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border-subtle); }
+        .card-title { font-size: 17px; font-weight: 600; }
+        
+        /* Forms */
+        .form-group { margin-bottom: 18px; }
+        .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-input, .form-textarea, .form-select {
+            width: 100%; padding: 12px 14px;
+            background: var(--bg-tertiary); border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); color: var(--text-primary);
+            font-size: 14px; font-family: inherit; transition: var(--transition);
+        }
+        .form-input:focus, .form-textarea:focus, .form-select:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1); }
+        .form-textarea { min-height: 100px; resize: vertical; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+            padding: 11px 20px; border: none; border-radius: var(--radius-md);
+            font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: inherit;
+        }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-primary), #d97706); color: var(--bg-primary); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3); }
+        .btn-secondary { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: var(--border-color); }
+        .btn-success { background: var(--accent-secondary); color: white; }
+        
+        /* Badges */
+        .badge { display: inline-flex; align-items: center; padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+        .badge-estado-abierto { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+        .badge-estado-en_proceso { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+        .badge-estado-resuelto { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        .badge-prioridad-baja { background: rgba(107, 114, 128, 0.15); color: #9ca3af; }
+        .badge-prioridad-media { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+        .badge-prioridad-alta { background: rgba(249, 115, 22, 0.15); color: #fb923c; }
+        .badge-prioridad-critica { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+        
+        /* Incidencias List */
+        .incidencia-list { display: flex; flex-direction: column; gap: 10px; }
+        .incidencia-item {
+            background: var(--bg-tertiary); border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md); padding: 18px; cursor: pointer; transition: var(--transition);
+        }
+        .incidencia-item:hover { border-color: var(--accent-primary); transform: translateX(4px); }
+        .incidencia-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .incidencia-titulo { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+        .incidencia-meta { display: flex; gap: 14px; font-size: 12px; color: var(--text-muted); }
+        .incidencia-badges { display: flex; gap: 7px; }
+        
+        /* Chat */
+        .chat-container { display: flex; flex-direction: column; height: calc(100vh - 180px); min-height: 450px; }
+        .chat-messages {
+            flex: 1; overflow-y: auto; padding: 18px;
+            background: var(--bg-tertiary); border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            border: 1px solid var(--border-color); border-bottom: none;
+        }
+        .message { margin-bottom: 18px; max-width: 80%; }
+        .message-user { margin-left: auto; }
+        .message-content { padding: 14px 18px; border-radius: var(--radius-md); line-height: 1.6; }
+        .message-user .message-content { background: linear-gradient(135deg, var(--accent-primary), #d97706); color: var(--bg-primary); }
+        .message-assistant .message-content { background: var(--bg-card); border: 1px solid var(--border-color); }
+        .message-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 5px; }
+        .chat-input-container {
+            display: flex; gap: 10px; padding: 18px;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        }
+        .chat-input { flex: 1; }
+        
+        /* Modal */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7); z-index: 1000;
+            align-items: center; justify-content: center; backdrop-filter: blur(4px);
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg); width: 90%; max-width: 650px;
+            max-height: 90vh; overflow-y: auto;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; border-bottom: 1px solid var(--border-color); }
+        .modal-title { font-size: 18px; font-weight: 600; }
+        .modal-close { background: none; border: none; font-size: 22px; color: var(--text-muted); cursor: pointer; padding: 4px; }
+        .modal-close:hover { color: var(--text-primary); }
+        .modal-body { padding: 22px; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; padding: 18px 22px; border-top: 1px solid var(--border-color); }
+        
+        /* Timeline */
+        .timeline { position: relative; padding-left: 28px; }
+        .timeline::before { content: ''; position: absolute; left: 9px; top: 0; bottom: 0; width: 2px; background: var(--border-color); }
+        .timeline-item { position: relative; margin-bottom: 22px; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -22px; top: 7px;
+            width: 10px; height: 10px; border-radius: 50%;
+            background: var(--accent-primary); border: 2px solid var(--bg-card);
+        }
+        .timeline-autor { font-weight: 600; margin-bottom: 3px; }
+        .timeline-fecha { font-size: 11px; color: var(--text-muted); margin-bottom: 7px; }
+        .timeline-contenido { background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 14px; font-size: 13px; line-height: 1.6; }
+        
+        /* Loading & Empty */
+        .loading { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 36px; color: var(--text-muted); }
+        .spinner { width: 18px; height: 18px; border: 2px solid var(--border-color); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .empty-state { text-align: center; padding: 50px 18px; color: var(--text-muted); }
+        .empty-state-icon { font-size: 42px; margin-bottom: 14px; opacity: 0.5; }
+        .empty-state-title { font-size: 16px; color: var(--text-secondary); margin-bottom: 6px; }
+        
+        /* Toast */
+        .toast-container { position: fixed; bottom: 22px; right: 22px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+        .toast {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); padding: 14px 18px;
+            display: flex; align-items: center; gap: 10px;
+            animation: slideIn 0.3s ease; min-width: 280px;
+        }
+        .toast-success { border-left: 4px solid var(--accent-secondary); }
+        .toast-error { border-left: 4px solid var(--accent-warning); }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+        
+        /* Upload */
+        .upload-zone {
+            border: 2px dashed var(--border-color); border-radius: var(--radius-lg);
+            padding: 36px; text-align: center; cursor: pointer; transition: var(--transition);
+        }
+        .upload-zone:hover { border-color: var(--accent-primary); background: rgba(245, 158, 11, 0.03); }
+        .upload-icon { font-size: 42px; margin-bottom: 14px; color: var(--text-muted); }
+        .doc-list { display: grid; gap: 10px; margin-top: 18px; }
+        .doc-item { display: flex; align-items: center; gap: 10px; padding: 14px; background: var(--bg-tertiary); border-radius: var(--radius-md); }
+        .doc-icon { font-size: 22px; }
+        .doc-info { flex: 1; }
+        .doc-name { font-weight: 500; margin-bottom: 2px; font-size: 14px; }
+        .doc-meta { font-size: 11px; color: var(--text-muted); }
+        
+        /* Config */
+        .config-section { margin-bottom: 28px; }
+        .config-title { font-size: 15px; font-weight: 600; margin-bottom: 14px; padding-bottom: 7px; border-bottom: 1px solid var(--border-subtle); }
+        .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+        .provider-card {
+            background: var(--bg-tertiary); border: 2px solid var(--border-color);
+            border-radius: var(--radius-md); padding: 18px; cursor: pointer; transition: var(--transition);
+        }
+        .provider-card:hover { border-color: var(--text-muted); }
+        .provider-card.selected { border-color: var(--accent-primary); background: rgba(245, 158, 11, 0.05); }
+        .provider-name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .provider-desc { font-size: 12px; color: var(--text-muted); }
+        
+        @media (max-width: 800px) {
+            .app-container { grid-template-columns: 1fr; }
+            .sidebar { position: relative; width: 100%; height: auto; }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">PR</div>
+                <div class="logo-text">
+                    <span class="logo-title">PR-System</span>
+                    <span class="logo-subtitle">Conocimiento Vivo</span>
+                </div>
+            </div>
+            <div class="nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Principal</div>
+                    <div class="nav-item active" data-page="dashboard"><span class="nav-icon">📊</span><span>Dashboard</span></div>
+                    <div class="nav-item" data-page="incidencias"><span class="nav-icon">📋</span><span>Incidencias</span></div>
+                    <div class="nav-item" data-page="consultar"><span class="nav-icon">💬</span><span>Consultar Sistema</span></div>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Conocimiento</div>
+                    <div class="nav-item" data-page="documentos"><span class="nav-icon">📁</span><span>Documentos</span></div>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Sistema</div>
+                    <div class="nav-item" data-page="configuracion"><span class="nav-icon">⚙️</span><span>Configuración</span></div>
+                </div>
+            </div>
+            <div class="sidebar-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Documentos en RAG</div>
+                    <div class="stat-value" id="stat-documentos">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Casos resueltos</div>
+                    <div class="stat-value" id="stat-resueltos">0</div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <!-- DASHBOARD -->
+            <section id="page-dashboard" class="page active">
+                <div class="page-header">
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-description">Vista general del sistema de conocimiento</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Incidencias Recientes</h2>
+                        <button class="btn btn-primary" onclick="abrirNuevaIncidencia()">+ Nueva Incidencia</button>
+                    </div>
+                    <div id="dashboard-incidencias" class="incidencia-list">
+                        <div class="loading"><div class="spinner"></div><span>Cargando...</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- INCIDENCIAS -->
+            <section id="page-incidencias" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">Incidencias</h1>
+                    <p class="page-description">Gestión de casos y problemas reportados</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Todas las Incidencias</h2>
+                        <button class="btn btn-primary" onclick="abrirNuevaIncidencia()">+ Nueva Incidencia</button>
+                    </div>
+                    <div id="lista-incidencias" class="incidencia-list">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📋</div>
+                            <div class="empty-state-title">No hay incidencias</div>
+                            <p>Crea la primera incidencia para comenzar</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONSULTAR -->
+            <section id="page-consultar" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">Consultar Sistema</h1>
+                    <p class="page-description">Pregunta al sistema sobre casos anteriores</p>
+                </div>
+                <div class="card">
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="message message-assistant">
+                                <div class="message-label">Sistema PR</div>
+                                <div class="message-content">
+                                    ¡Hola! Soy el sistema PR. Puedo ayudarte a encontrar información sobre casos anteriores y darte recomendaciones.<br><br>
+                                    Prueba preguntar: "¿Qué casos de soldadura hemos tenido?" o "¿Cómo resolvimos problemas de temperatura?"
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-container">
+                            <input type="text" class="form-input chat-input" id="chat-input" placeholder="Escribe tu pregunta..." onkeypress="if(event.key === 'Enter') enviarConsulta()">
+                            <button class="btn btn-primary" onclick="enviarConsulta()">Enviar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DOCUMENTOS -->
+            <section id="page-documentos" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">Base de Conocimiento</h1>
+                    <p class="page-description">Documentos ISO, procedimientos, manuales y casos resueltos</p>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h2 class="card-title">Subir Documento</h2></div>
+                    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+                        <div class="upload-icon">📄</div>
+                        <p>Arrastra archivos aquí o haz clic para seleccionar</p>
+                        <p style="font-size: 11px; color: var(--text-muted); margin-top: 7px;">Soporta: .txt, .md, .csv</p>
+                    </div>
+                    <input type="file" id="file-input" hidden onchange="subirDocumento(this.files[0])">
+                </div>
+                <div class="card">
+                    <div class="card-header"><h2 class="card-title">Documentos en el Sistema</h2></div>
+                    <div id="lista-documentos" class="doc-list">
+                        <div class="loading"><div class="spinner"></div><span>Cargando...</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONFIGURACIÓN -->
+            <section id="page-configuracion" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">Configuración</h1>
+                    <p class="page-description">Configura el proveedor de LLM</p>
+                </div>
+                <div class="card">
+                    <div class="config-section">
+                        <h3 class="config-title">Proveedor de LLM</h3>
+                        <div class="config-grid">
+                            <div class="provider-card selected" data-provider="ollama" onclick="seleccionarProvider('ollama')">
+                                <div class="provider-name">🏠 Ollama (Local)</div>
+                                <div class="provider-desc">Ejecuta modelos en tu servidor. Sin costo.</div>
+                            </div>
+                            <div class="provider-card" data-provider="openai" onclick="seleccionarProvider('openai')">
+                                <div class="provider-name">🌐 OpenAI</div>
+                                <div class="provider-desc">GPT-4, GPT-3.5. Requiere API key.</div>
+                            </div>
+                            <div class="provider-card" data-provider="anthropic" onclick="seleccionarProvider('anthropic')">
+                                <div class="provider-name">🧠 Anthropic</div>
+                                <div class="provider-desc">Claude. Requiere API key.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="config-section" id="config-ollama">
+                        <h3 class="config-title">Configuración Ollama</h3>
+                        <div class="form-group">
+                            <label class="form-label">URL del servidor</label>
+                            <input type="text" class="form-input" id="ollama-url" value="http://localhost:11434">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Modelo</label>
+                            <select class="form-select" id="ollama-model">
+                                <option value="llama3">Llama 3</option>
+                                <option value="llama3.1">Llama 3.1</option>
+                                <option value="deepseek-coder">DeepSeek Coder</option>
+                                <option value="mistral">Mistral</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="config-section" id="config-cloud" style="display: none;">
+                        <h3 class="config-title">Configuración Cloud</h3>
+                        <div class="form-group">
+                            <label class="form-label">API Key</label>
+                            <input type="password" class="form-input" id="api-key" placeholder="sk-...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Modelo</label>
+                            <input type="text" class="form-input" id="cloud-model" placeholder="gpt-4">
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 22px;">
+                        <button class="btn btn-primary" onclick="guardarConfiguracion()">Guardar</button>
+                        <button class="btn btn-secondary" onclick="probarConexion()">Probar Conexión</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Nueva Incidencia -->
+    <div class="modal-overlay" id="modal-nueva-incidencia">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Nueva Incidencia</h2>
+                <button class="modal-close" onclick="cerrarModal('modal-nueva-incidencia')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Título</label>
+                    <input type="text" class="form-input" id="inc-titulo" placeholder="Describe brevemente el problema">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descripción detallada</label>
+                    <textarea class="form-textarea" id="inc-descripcion" placeholder="Explica qué sucedió, cuándo, dónde..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Área</label>
+                        <select class="form-select" id="inc-area">
+                            <option value="">Selecciona...</option>
+                            <option value="Producción">Producción</option>
+                            <option value="Calidad">Calidad</option>
+                            <option value="Mantenimiento">Mantenimiento</option>
+                            <option value="Ingeniería">Ingeniería</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Prioridad</label>
+                        <select class="form-select" id="inc-prioridad">
+                            <option value="baja">Baja</option>
+                            <option value="media" selected>Media</option>
+                            <option value="alta">Alta</option>
+                            <option value="critica">Crítica</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tu nombre</label>
+                    <input type="text" class="form-input" id="inc-autor" placeholder="¿Quién reporta?">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModal('modal-nueva-incidencia')">Cancelar</button>
+                <button class="btn btn-primary" onclick="crearIncidencia()">Crear Incidencia</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detalle Incidencia -->
+    <div class="modal-overlay" id="modal-detalle-incidencia">
+        <div class="modal" style="max-width: 750px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="detalle-titulo">Detalle</h2>
+                <button class="modal-close" onclick="cerrarModal('modal-detalle-incidencia')">&times;</button>
+            </div>
+            <div class="modal-body" id="detalle-contenido"></div>
+            <div class="modal-footer" id="detalle-acciones"></div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        const API_BASE = '/api';
+        let providerSeleccionado = 'ollama';
+
+        // Navegación
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const pagina = item.dataset.page;
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(`page-${pagina}`).classList.add('active');
+                
+                if (pagina === 'dashboard' || pagina === 'incidencias') cargarIncidencias();
+                else if (pagina === 'documentos') cargarDocumentos();
+                else if (pagina === 'configuracion') cargarConfiguracion();
+            });
+        });
+
+        // Toast
+        function mostrarToast(mensaje, tipo = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${tipo}`;
+            toast.innerHTML = `<span>${tipo === 'success' ? '✓' : '✕'}</span><span>${mensaje}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        // Modales
+        function abrirModal(id) { document.getElementById(id).classList.add('active'); }
+        function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
+        
+        function abrirNuevaIncidencia() {
+            ['inc-titulo', 'inc-descripcion', 'inc-autor'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('inc-area').value = '';
+            document.getElementById('inc-prioridad').value = 'media';
+            abrirModal('modal-nueva-incidencia');
+        }
+
+        // Incidencias
+        async function cargarIncidencias() {
+            try {
+                const response = await fetch(`${API_BASE}/incidencias`);
+                const incidencias = await response.json();
+                renderizarIncidencias(incidencias, 'lista-incidencias');
+                renderizarIncidencias(incidencias.slice(0, 5), 'dashboard-incidencias');
+                document.getElementById('stat-resueltos').textContent = incidencias.filter(i => i.estado === 'resuelto').length;
+            } catch (error) {
+                console.error('Error:', error);
+                ['lista-incidencias', 'dashboard-incidencias'].forEach(id => {
+                    document.getElementById(id).innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><div class="empty-state-title">Error de conexión</div><p>Verifica que el backend esté corriendo</p></div>';
+                });
+            }
+        }
+
+        function renderizarIncidencias(incidencias, containerId) {
+            const container = document.getElementById(containerId);
+            if (!incidencias.length) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-title">No hay incidencias</div><p>Crea la primera incidencia</p></div>';
+                return;
+            }
+            container.innerHTML = incidencias.map(inc => `
+                <div class="incidencia-item" onclick="verIncidencia('${inc.id}')">
+                    <div class="incidencia-header">
+                        <div>
+                            <div class="incidencia-titulo">${inc.titulo}</div>
+                            <div class="incidencia-meta">
+                                <span>📅 ${new Date(inc.fecha_creacion).toLocaleDateString('es-MX')}</span>
+                                ${inc.area ? `<span>📍 ${inc.area}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="incidencia-badges">
+                            <span class="badge badge-estado-${inc.estado}">${inc.estado.replace('_', ' ')}</span>
+                            <span class="badge badge-prioridad-${inc.prioridad}">${inc.prioridad}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function crearIncidencia() {
+            const datos = {
+                titulo: document.getElementById('inc-titulo').value,
+                descripcion: document.getElementById('inc-descripcion').value,
+                area: document.getElementById('inc-area').value || null,
+                prioridad: document.getElementById('inc-prioridad').value,
+                creado_por: document.getElementById('inc-autor').value || null
+            };
+            if (!datos.titulo || !datos.descripcion) { mostrarToast('Completa título y descripción', 'error'); return; }
+            
+            try {
+                const response = await fetch(`${API_BASE}/incidencias`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+                const resultado = await response.json();
+                cerrarModal('modal-nueva-incidencia');
+                mostrarToast('Incidencia creada');
+                if (resultado.casos_similares?.length > 0) {
+                    setTimeout(() => alert(`¡Encontramos ${resultado.casos_similares.length} casos similares!`), 300);
+                }
+                cargarIncidencias();
+            } catch (error) {
+                mostrarToast('Error al crear', 'error');
+            }
+        }
+
+        async function verIncidencia(id) {
+            try {
+                const response = await fetch(`${API_BASE}/incidencias/${id}`);
+                const { incidencia, reportes } = await response.json();
+                
+                document.getElementById('detalle-titulo').textContent = incidencia.titulo;
+                
+                let html = `
+                    <div style="margin-bottom: 20px;">
+                        <div class="incidencia-badges" style="margin-bottom: 14px;">
+                            <span class="badge badge-estado-${incidencia.estado}">${incidencia.estado.replace('_', ' ')}</span>
+                            <span class="badge badge-prioridad-${incidencia.prioridad}">${incidencia.prioridad}</span>
+                            ${incidencia.area ? `<span class="badge" style="background: var(--bg-tertiary);">📍 ${incidencia.area}</span>` : ''}
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 13px;">
+                            Creado el ${new Date(incidencia.fecha_creacion).toLocaleString('es-MX')}
+                            ${incidencia.creado_por ? ` por ${incidencia.creado_por}` : ''}
+                        </p>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="margin-bottom: 10px; color: var(--text-muted); font-size: 11px; text-transform: uppercase;">Descripción</h4>
+                        <p style="line-height: 1.7;">${incidencia.descripcion}</p>
+                    </div>
+                `;
+                
+                if (reportes.length > 0) {
+                    html += `<div style="margin-bottom: 20px;">
+                        <h4 style="margin-bottom: 14px; color: var(--text-muted); font-size: 11px; text-transform: uppercase;">Reportes</h4>
+                        <div class="timeline">
+                            ${reportes.map(r => `
+                                <div class="timeline-item">
+                                    <div class="timeline-autor">${r.autor}</div>
+                                    <div class="timeline-fecha">${new Date(r.fecha).toLocaleString('es-MX')}</div>
+                                    <div class="timeline-contenido">${r.contenido}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>`;
+                }
+                
+                if (incidencia.solucion) {
+                    html += `<div style="padding: 18px; background: rgba(16, 185, 129, 0.1); border-radius: var(--radius-md); border: 1px solid rgba(16, 185, 129, 0.2); margin-bottom: 20px;">
+                        <h4 style="margin-bottom: 10px; color: var(--accent-secondary); font-size: 11px; text-transform: uppercase;">✓ Solución</h4>
+                        <p style="line-height: 1.7;">${incidencia.solucion}</p>
+                    </div>`;
+                }
+                
+                if (incidencia.estado !== 'cerrado' && incidencia.estado !== 'resuelto') {
+                    html += `<div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                        <h4 style="margin-bottom: 14px;">Agregar Reporte</h4>
+                        <div class="form-group"><label class="form-label">Tu nombre</label><input type="text" class="form-input" id="reporte-autor"></div>
+                        <div class="form-group"><label class="form-label">Tu versión</label><textarea class="form-textarea" id="reporte-contenido"></textarea></div>
+                        <button class="btn btn-secondary" onclick="agregarReporte('${id}')">Agregar Reporte</button>
+                    </div>`;
+                }
+                
+                document.getElementById('detalle-contenido').innerHTML = html;
+                
+                let acciones = `<button class="btn btn-secondary" onclick="cerrarModal('modal-detalle-incidencia')">Cerrar</button>`;
+                if (incidencia.estado !== 'resuelto' && incidencia.estado !== 'cerrado') {
+                    acciones += `<button class="btn btn-success" onclick="abrirResolver('${id}')">Marcar Resuelto</button>`;
+                }
+                if (incidencia.estado === 'resuelto' || incidencia.estado === 'abierto') {
+                    acciones += `<button class="btn btn-primary" onclick="generarDocumento('${id}')">Generar Documento</button>`;
+                }
+                document.getElementById('detalle-acciones').innerHTML = acciones;
+                
+                abrirModal('modal-detalle-incidencia');
+            } catch (error) {
+                mostrarToast('Error cargando detalle', 'error');
+            }
+        }
+
+        async function agregarReporte(incidenciaId) {
+            const autor = document.getElementById('reporte-autor').value;
+            const contenido = document.getElementById('reporte-contenido').value;
+            if (!autor || !contenido) { mostrarToast('Completa los campos', 'error'); return; }
+            
+            try {
+                await fetch(`${API_BASE}/incidencias/${incidenciaId}/reportes`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ autor, contenido })
+                });
+                mostrarToast('Reporte agregado');
+                verIncidencia(incidenciaId);
+            } catch (error) {
+                mostrarToast('Error', 'error');
+            }
+        }
+
+        function abrirResolver(id) {
+            const solucion = prompt('Describe la solución aplicada:');
+            if (solucion) resolverIncidencia(id, solucion);
+        }
+
+        async function resolverIncidencia(id, solucion) {
+            try {
+                await fetch(`${API_BASE}/incidencias/${id}/resolver`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ solucion, agregar_a_rag: true })
+                });
+                mostrarToast('Incidencia resuelta y agregada al RAG');
+                cerrarModal('modal-detalle-incidencia');
+                cargarIncidencias();
+                actualizarStats();
+            } catch (error) {
+                mostrarToast('Error', 'error');
+            }
+        }
+
+        async function generarDocumento(id) {
+            mostrarToast('Generando documento con IA...');
+            try {
+                const response = await fetch(`${API_BASE}/incidencias/${id}/generar-documento`, { method: 'POST' });
+                const { documento } = await response.json();
+                const win = window.open('', '_blank');
+                win.document.write(`<pre style="font-family: sans-serif; padding: 20px; line-height: 1.8;">${documento}</pre>`);
+            } catch (error) {
+                mostrarToast('Error generando documento', 'error');
+            }
+        }
+
+        // Chat / Consultar RAG
+        async function enviarConsulta() {
+            const input = document.getElementById('chat-input');
+            const pregunta = input.value.trim();
+            if (!pregunta) return;
+            
+            const messages = document.getElementById('chat-messages');
+            messages.innerHTML += `<div class="message message-user"><div class="message-label">Tú</div><div class="message-content">${pregunta}</div></div>`;
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+            
+            messages.innerHTML += `<div class="message message-assistant" id="msg-loading"><div class="message-label">Sistema PR</div><div class="message-content"><div class="loading" style="padding: 10px;"><div class="spinner"></div><span>Buscando...</span></div></div></div>`;
+            
+            try {
+                const response = await fetch(`${API_BASE}/rag/consultar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pregunta, n_resultados: 5 })
+                });
+                const { respuesta, casos_similares } = await response.json();
+                
+                document.getElementById('msg-loading').remove();
+                
+                let html = `<div class="message message-assistant"><div class="message-label">Sistema PR</div><div class="message-content">${respuesta.replace(/\n/g, '<br>')}`;
+                if (casos_similares?.length > 0) {
+                    html += `<div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-muted);">📚 Basado en ${casos_similares.length} caso(s) similares encontrados</div>`;
+                }
+                html += `</div></div>`;
+                messages.innerHTML += html;
+                messages.scrollTop = messages.scrollHeight;
+            } catch (error) {
+                document.getElementById('msg-loading').remove();
+                messages.innerHTML += `<div class="message message-assistant"><div class="message-label">Sistema PR</div><div class="message-content" style="color: var(--accent-warning);">Error al consultar. Verifica la conexión.</div></div>`;
+            }
+        }
+
+        // Documentos
+        async function cargarDocumentos() {
+            try {
+                const response = await fetch(`${API_BASE}/rag/documentos`);
+                const { documentos, incidencias_en_rag, total } = await response.json();
+                
+                document.getElementById('stat-documentos').textContent = total;
+                
+                const container = document.getElementById('lista-documentos');
+                const items = [
+                    ...documentos.map(d => ({ tipo: 'doc', ...d })),
+                    ...incidencias_en_rag.map(i => ({ tipo: 'inc', ...i }))
+                ];
+                
+                if (!items.length) {
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📁</div><div class="empty-state-title">Sin documentos</div><p>Sube documentos o resuelve incidencias</p></div>';
+                    return;
+                }
+                
+                container.innerHTML = items.map(item => `
+                    <div class="doc-item">
+                        <div class="doc-icon">${item.tipo === 'doc' ? '📄' : '✅'}</div>
+                        <div class="doc-info">
+                            <div class="doc-name">${item.nombre || item.titulo}</div>
+                            <div class="doc-meta">${item.tipo === 'doc' ? item.tipo : 'Caso resuelto'} • ${new Date(item.fecha_subida || item.fecha_creacion).toLocaleDateString('es-MX')}</div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('lista-documentos').innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><div class="empty-state-title">Error</div></div>';
+            }
+        }
+
+        async function subirDocumento(archivo) {
+            if (!archivo) return;
+            const formData = new FormData();
+            formData.append('archivo', archivo);
+            formData.append('titulo', archivo.name);
+            formData.append('tipo', 'documento');
+            
+            try {
+                await fetch(`${API_BASE}/rag/agregar-documento`, { method: 'POST', body: formData });
+                mostrarToast('Documento subido');
+                cargarDocumentos();
+            } catch (error) {
+                mostrarToast('Error subiendo', 'error');
+            }
+        }
+
+        // Configuración
+        function seleccionarProvider(provider) {
+            providerSeleccionado = provider;
+            document.querySelectorAll('.provider-card').forEach(c => c.classList.remove('selected'));
+            document.querySelector(`[data-provider="${provider}"]`).classList.add('selected');
+            
+            document.getElementById('config-ollama').style.display = provider === 'ollama' ? 'block' : 'none';
+            document.getElementById('config-cloud').style.display = provider !== 'ollama' ? 'block' : 'none';
+        }
+
+        async function cargarConfiguracion() {
+            try {
+                const response = await fetch(`${API_BASE}/configuracion`);
+                const config = await response.json();
+                seleccionarProvider(config.llm_provider);
+                document.getElementById('ollama-url').value = config.ollama_url || 'http://localhost:11434';
+                document.getElementById('ollama-model').value = config.llm_model || 'llama3';
+            } catch (error) {}
+        }
+
+        async function guardarConfiguracion() {
+            const datos = { provider: providerSeleccionado };
+            
+            if (providerSeleccionado === 'ollama') {
+                datos.model = document.getElementById('ollama-model').value;
+                datos.ollama_url = document.getElementById('ollama-url').value;
+            } else {
+                datos.model = document.getElementById('cloud-model').value;
+                datos.api_key = document.getElementById('api-key').value;
+            }
+            
+            try {
+                await fetch(`${API_BASE}/configuracion`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+                mostrarToast('Configuración guardada');
+            } catch (error) {
+                mostrarToast('Error', 'error');
+            }
+        }
+
+        async function probarConexion() {
+            mostrarToast('Probando conexión...');
+            try {
+                const response = await fetch(`${API_BASE}/configuracion/test-llm`);
+                const { exito, respuesta } = await response.json();
+                if (exito) mostrarToast('¡Conexión exitosa!');
+                else mostrarToast(respuesta, 'error');
+            } catch (error) {
+                mostrarToast('Error de conexión', 'error');
+            }
+        }
+
+        async function actualizarStats() {
+            try {
+                const response = await fetch(`${API_BASE}/rag/stats`);
+                const { total_documentos } = await response.json();
+                document.getElementById('stat-documentos').textContent = total_documentos;
+            } catch (error) {}
+        }
+
+        // Drag & Drop
+        const uploadZone = document.getElementById('upload-zone');
+        uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+        uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+        uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('dragover'); if (e.dataTransfer.files[0]) subirDocumento(e.dataTransfer.files[0]); });
+
+        // Init
+        cargarIncidencias();
+        actualizarStats();
+    </script>
+</body>
+</html>
