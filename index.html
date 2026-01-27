@@ -797,6 +797,35 @@
 <body>
 
     <!-- ============================================================
+         PANTALLA 0: LOGIN
+         ============================================================ -->
+    <div class="landing-screen" id="login-screen" style="display:none;">
+        <div class="landing-content" style="max-width:400px;">
+            <div class="landing-logo">PR</div>
+            <h1 class="landing-title" style="font-size:32px;"><span>PR-System</span></h1>
+            <p class="landing-subtitle" style="font-size:16px; margin-bottom:32px;">Inicia sesión para continuar</p>
+            <div class="card" style="text-align:left;">
+                <div class="form-group">
+                    <label class="form-label">Usuario</label>
+                    <input type="text" class="form-input" id="login-user" placeholder="admin" value="admin">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" class="form-input" id="login-pass" placeholder="••••••••" value="admin123"
+                           onkeypress="if(event.key==='Enter') hacerLogin()">
+                </div>
+                <div id="login-error" style="color:#f87171; font-size:13px; margin-bottom:12px; display:none;"></div>
+                <button class="btn btn-primary" style="width:100%; padding:14px;" onclick="hacerLogin()">
+                    Iniciar Sesión
+                </button>
+                <p style="text-align:center; margin-top:16px; font-size:12px; color:var(--text-muted);">
+                    Usuario por defecto: <strong>admin</strong> / <strong>admin123</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
          PANTALLA 1: LANDING
          ============================================================ -->
     <div class="landing-screen" id="landing-screen">
@@ -917,6 +946,12 @@
                     <div class="stat-card">
                         <div class="stat-label">Casos resueltos</div>
                         <div class="stat-value" id="stat-resueltos">23</div>
+                    </div>
+                    <div style="margin-top:12px; padding:10px; background:var(--bg-tertiary); border-radius:var(--radius-md); font-size:12px;">
+                        <div style="color:var(--text-muted); margin-bottom:4px;">Sesión activa</div>
+                        <div id="sidebar-user" style="font-weight:600;"></div>
+                        <div id="sidebar-rol" style="color:var(--text-muted); font-size:11px;"></div>
+                        <button class="btn btn-secondary" style="width:100%; margin-top:8px; padding:6px; font-size:11px;" onclick="cerrarSesion()">Cerrar Sesión</button>
                     </div>
                     <div class="demo-badge">🎮 MODO DEMO</div>
                 </div>
@@ -1095,6 +1130,76 @@
          ============================================================ -->
     <script>
         // ============================================================
+        // AUTENTICACIÓN
+        // ============================================================
+        let authToken = localStorage.getItem('pr_token') || null;
+        let currentUser = JSON.parse(localStorage.getItem('pr_user') || 'null');
+        const API_BASE = ''; // Mismo origen
+
+        function authHeaders() {
+            return authToken ? { 'Authorization': 'Bearer ' + authToken } : {};
+        }
+
+        async function hacerLogin() {
+            const username = document.getElementById('login-user').value;
+            const password = document.getElementById('login-pass').value;
+            const errorDiv = document.getElementById('login-error');
+            errorDiv.style.display = 'none';
+
+            try {
+                const formData = new URLSearchParams();
+                formData.append('username', username);
+                formData.append('password', password);
+
+                const resp = await fetch(API_BASE + '/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData
+                });
+
+                if (!resp.ok) {
+                    const err = await resp.json();
+                    throw new Error(err.detail || 'Error de autenticación');
+                }
+
+                const data = await resp.json();
+                authToken = data.access_token;
+                currentUser = data.usuario;
+                localStorage.setItem('pr_token', authToken);
+                localStorage.setItem('pr_user', JSON.stringify(currentUser));
+
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('landing-screen').style.display = 'flex';
+            } catch (e) {
+                errorDiv.textContent = e.message;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        function cerrarSesion() {
+            authToken = null;
+            currentUser = null;
+            localStorage.removeItem('pr_token');
+            localStorage.removeItem('pr_user');
+            document.getElementById('app-screen').style.display = 'none';
+            document.getElementById('landing-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+        }
+
+        // Al cargar, verificar si hay sesión activa
+        (function() {
+            if (authToken && currentUser) {
+                // Sesión existente: mostrar landing
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('landing-screen').style.display = 'flex';
+            } else {
+                // Sin sesión: mostrar login
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('landing-screen').style.display = 'none';
+            }
+        })();
+
+        // ============================================================
         // DATOS SIMULADOS (RAG)
         // ============================================================
         const ragDocumentos = [
@@ -1228,6 +1333,10 @@
         function inicializarApp() {
             renderizarIncidencias();
             renderizarDocumentos();
+            if (currentUser) {
+                document.getElementById('sidebar-user').textContent = currentUser.nombre_completo;
+                document.getElementById('sidebar-rol').textContent = currentUser.rol.toUpperCase();
+            }
             mostrarToast('Sistema PR-System cargado correctamente', 'success');
         }
 

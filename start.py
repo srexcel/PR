@@ -35,6 +35,8 @@ def main():
     print("=" * 50)
     print("  ✓ Sistema listo!")
     print("  Abre tu navegador en: http://localhost:8000")
+    print()
+    print("  Usuario: admin  |  Contraseña: admin123")
     print("=" * 50)
     print()
     print("Presiona Ctrl+C para detener")
