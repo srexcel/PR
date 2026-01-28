@@ -1156,11 +1156,11 @@ async def health_check():
 # SERVIR FRONTEND
 # ============================================================
 
-FRONTEND_DIR = os.path.join(BASE_DIR, "..", "frontend")
+INDEX_FILE = os.path.join(BASE_DIR, "index.html")
 
-if os.path.exists(FRONTEND_DIR):
-    app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
-    @app.get("/")
-    async def root():
-        return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
+@app.get("/")
+async def root():
+    if os.path.exists(INDEX_FILE):
+        return FileResponse(INDEX_FILE)
+    return {"mensaje": "PR-System API v1.1.0 - Frontend no encontrado"}

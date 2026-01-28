@@ -14,9 +14,9 @@ def main():
     print("=" * 50)
     print()
     
-    # Cambiar al directorio backend
-    backend_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "backend")
-    os.chdir(backend_dir)
+    # Cambiar al directorio del proyecto
+    project_dir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(project_dir)
     
     # Verificar/instalar dependencias
     print("[1/2] Verificando dependencias...")

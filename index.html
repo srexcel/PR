@@ -1146,6 +1146,7 @@
             const errorDiv = document.getElementById('login-error');
             errorDiv.style.display = 'none';
 
+            // Intentar login con backend real primero
             try {
                 const formData = new URLSearchParams();
                 formData.append('username', username);
@@ -1170,8 +1171,28 @@
 
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('landing-screen').style.display = 'flex';
+                return;
             } catch (e) {
-                errorDiv.textContent = e.message;
+                // Si el backend no está disponible, usar login simulado (modo demo)
+            }
+
+            // Login simulado para GitHub Pages / demo sin backend
+            if (username === 'admin' && password === 'admin123') {
+                currentUser = {
+                    id: 'demo-001',
+                    username: 'admin',
+                    nombre_completo: 'Administrador (Demo)',
+                    rol: 'admin',
+                    area: null
+                };
+                authToken = 'demo-token';
+                localStorage.setItem('pr_token', authToken);
+                localStorage.setItem('pr_user', JSON.stringify(currentUser));
+
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('landing-screen').style.display = 'flex';
+            } else {
+                errorDiv.textContent = 'Usuario o contraseña incorrectos';
                 errorDiv.style.display = 'block';
             }
         }
