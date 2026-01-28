@@ -394,11 +394,18 @@
             border-radius: var(--radius-lg); 
             padding: 22px; 
             margin-bottom: 22px; 
+                width: 100%;
         }
 
         .card-header { 
             display: flex; 
             justify-content: space-between; 
+
+            .card p {
+                    word-wrap: break-word;
+                    overflow-wrap: break-word;
+                    max-width: 100%;
+            }
             align-items: center; 
             margin-bottom: 18px; 
             padding-bottom: 14px; 
