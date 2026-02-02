@@ -1153,6 +1153,186 @@ async def health_check():
 
 
 # ============================================================
+# PR-AGENT ENDPOINTS
+# ============================================================
+
+from pr_agent import PRAgent
+
+# Inicializar agente PR
+pr_agent = PRAgent(
+    rag_collection=collection,
+    db_path=os.path.join(DATA_DIR, "pr_system.db"),
+    llm_func=consultar_llm
+)
+
+
+class ProblemaRequest(BaseModel):
+    descripcion: str
+    area: str
+    prioridad: Optional[str] = "media"
+
+
+class ResolverRequest(BaseModel):
+    solucion: str
+    causa_raiz: str
+    acciones_preventivas: str
+    agregar_a_rag: bool = True
+
+
+class ConsultaPRRequest(BaseModel):
+    pregunta: str
+    area: Optional[str] = None
+    n_resultados: int = 5
+
+
+@app.post("/api/pr/problema")
+async def recibir_problema_pr(
+    request: ProblemaRequest,
+    usuario: dict = Depends(obtener_usuario_actual)
+):
+    """
+    Endpoint principal PR: Recibe problema e inicia ciclo.
+
+    El agente PR:
+    1. Crea checkpoint
+    2. Busca casos similares en RAG
+    3. Si hay similares → Los muestra con análisis
+    4. Si es nuevo → Guía documentación
+
+    Implementa ANTES: ¿Dónde estoy?
+    """
+    resultado = await pr_agent.recibir_problema(
+        descripcion=request.descripcion,
+        area=request.area,
+        usuario=usuario["nombre_completo"],
+        prioridad=request.prioridad
+    )
+    return resultado
+
+
+@app.post("/api/pr/resolver/{incidencia_id}")
+async def resolver_pr(
+    incidencia_id: str,
+    request: ResolverRequest,
+    usuario: dict = Depends(requiere_rol("supervisor", "admin"))
+):
+    """
+    Cierra ciclo PR: Resuelve y hereda conocimiento.
+
+    El agente PR:
+    1. Crea nueva versión (ej: SOLDADURA_v1.3)
+    2. Guarda en RAG para futuros casos
+    3. Actualiza incidencia
+
+    Implementa DESPUÉS: ¿Qué aprendí?
+    """
+    resultado = await pr_agent.resolver_incidencia(
+        incidencia_id=incidencia_id,
+        solucion=request.solucion,
+        causa_raiz=request.causa_raiz,
+        acciones_preventivas=request.acciones_preventivas,
+        usuario=usuario["nombre_completo"],
+        agregar_a_rag=request.agregar_a_rag
+    )
+    return resultado
+
+
+@app.post("/api/pr/consultar")
+async def consultar_pr(
+    request: ConsultaPRRequest,
+    usuario: dict = Depends(obtener_usuario_actual)
+):
+    """
+    Consulta la base de conocimiento con RAG + LLM.
+
+    Busca casos similares y genera respuesta contextualizada
+    usando el conocimiento histórico de la empresa.
+    """
+    resultado = await pr_agent.consultar(
+        pregunta=request.pregunta,
+        area=request.area,
+        n_resultados=request.n_resultados
+    )
+    return resultado
+
+
+@app.get("/api/pr/versiones")
+async def listar_versiones_pr(
+    area: Optional[str] = None,
+    tipo: Optional[str] = None,
+    limite: int = 50,
+    usuario: dict = Depends(obtener_usuario_actual)
+):
+    """
+    Lista versiones de conocimiento.
+
+    Muestra la evolución del conocimiento:
+    SOLDADURA_v1.0 → SOLDADURA_v1.1 → SOLDADURA_v1.2 → ...
+    """
+    return pr_agent.versiones.listar_versiones(
+        area=area,
+        tipo=tipo,
+        limite=limite
+    )
+
+
+@app.get("/api/pr/versiones/{area}/historial")
+async def historial_area_pr(
+    area: str,
+    usuario: dict = Depends(obtener_usuario_actual)
+):
+    """
+    Obtiene historial completo de un área.
+
+    Muestra toda la evolución del conocimiento en esa área.
+    """
+    return pr_agent.obtener_historial_area(area)
+
+
+@app.get("/api/pr/estadisticas")
+async def estadisticas_pr(
+    usuario: dict = Depends(obtener_usuario_actual)
+):
+    """
+    Estadísticas del sistema PR.
+
+    Incluye:
+    - Total de documentos en memoria
+    - Versiones por área
+    - Checkpoints activos
+    """
+    return pr_agent.obtener_estadisticas()
+
+
+@app.post("/api/pr/incidencias/{incidencia_id}/documento-8d")
+async def generar_documento_8d_pr(
+    incidencia_id: str,
+    usuario: dict = Depends(obtener_usuario_actual)
+):
+    """
+    Genera documento 8D para una incidencia resuelta.
+
+    Usa LLM para crear documento profesional con:
+    D1-D8 completos según metodología 8D.
+    """
+    return await pr_agent.generar_documento_8d(incidencia_id)
+
+
+@app.post("/api/pr/incidencias/{incidencia_id}/reportes")
+async def agregar_reporte_pr(
+    incidencia_id: str,
+    reporte: ReporteCreate,
+    usuario: dict = Depends(obtener_usuario_actual)
+):
+    """Agrega un reporte a una incidencia usando PR-Agent"""
+    return await pr_agent.agregar_reporte(
+        incidencia_id=incidencia_id,
+        contenido=reporte.contenido,
+        autor=reporte.autor or usuario["nombre_completo"]
+    )
+
+
+# ============================================================
 # SERVIR FRONTEND
 # ============================================================
 
