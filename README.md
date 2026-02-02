@@ -2,137 +2,166 @@
 
 > **El conocimiento de tu empresa ya no se pierde. El conocimiento vive.**
 
-## ¿Qué es PR-System?
+[![Demo](https://img.shields.io/badge/🎮_DEMO-Probar_Ahora-orange?style=for-the-badge)](https://srexcel.github.io/PR/demo.html)
+[![GitHub](https://img.shields.io/badge/GitHub-Repositorio-blue?style=for-the-badge&logo=github)](https://github.com/srexcel/PR)
 
-Es un sistema que **aprende** de cada problema resuelto en tu empresa. A diferencia de ISO, ERPs o SharePoint que solo guardan documentos muertos, PR-System:
+---
+
+## 🎮 Demo Interactiva (Sin Instalar Nada)
+
+### 👉 [https://srexcel.github.io/PR/demo.html](https://srexcel.github.io/PR/demo.html)
+
+Prueba el ciclo PR completo:
+1. Reporta un problema
+2. El sistema busca casos similares
+3. Documenta la solución
+4. El conocimiento se hereda como versión
+
+---
+
+## 📊 Estado del Proyecto
+
+### ✅ Fase 1: PR-Agent (COMPLETADA)
+
+| Componente | Estado | Descripción |
+|------------|--------|-------------|
+| `pr_agent/ciclo.py` | ✅ | Ciclo de 3 preguntas (ANTES/DURANTE/DESPUÉS) |
+| `pr_agent/versiones.py` | ✅ | Versionado semántico (AREA_v1.0, v1.1...) |
+| `pr_agent/memoria.py` | ✅ | Wrapper RAG para ChromaDB |
+| `pr_agent/prompts.py` | ✅ | Templates LLM para metodología PR |
+| `pr_agent/agent.py` | ✅ | Orquestador principal |
+| `tests/test_pr_agent.py` | ✅ | 18 tests unitarios |
+
+### ✅ Infraestructura (COMPLETADA)
+
+| Componente | Estado | Descripción |
+|------------|--------|-------------|
+| FastAPI Backend | ✅ | API REST completa |
+| ChromaDB RAG | ✅ | Búsqueda semántica |
+| Ollama Integration | ✅ | LLM local (llama3.2:1b) |
+| JWT Authentication | ✅ | Autenticación segura |
+| Demo Web | ✅ | GitHub Pages |
+| Windows Installer | ✅ | instalador_windows.bat |
+
+### 🔄 Próximas Fases
+
+| Fase | Componente | Estado | Descripción |
+|------|------------|--------|-------------|
+| 2 | WhatsApp Bot | 📋 Pendiente | Integración con Baileys |
+| 2 | Telegram Bot | 📋 Pendiente | Bot para reportes |
+| 3 | Docker | 📋 Pendiente | Containerización |
+| 3 | Enterprise | 📋 Pendiente | Multi-tenant, LDAP |
+
+---
+
+## 🚀 Instalación
+
+### Opción 1: Windows (Automático)
+
+```batch
+# 1. Descargar
+git clone https://github.com/srexcel/PR.git
+cd PR
+
+# 2. Ejecutar instalador (como administrador)
+instalador_windows.bat
+
+# 3. Iniciar sistema
+iniciar_pr.bat
+```
+
+### Opción 2: Linux/Mac (Manual)
+
+```bash
+# 1. Clonar
+git clone https://github.com/srexcel/PR.git
+cd PR
+
+# 2. Entorno virtual
+python3 -m venv venv
+source venv/bin/activate
+
+# 3. Dependencias
+pip install -r requirements.txt
+
+# 4. Ollama (LLM local)
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3.2:1b
+
+# 5. Iniciar
+python -m uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+### Acceso
+- **URL:** http://localhost:8000
+- **Usuario:** admin
+- **Contraseña:** admin123
+
+---
+
+## 📖 ¿Qué es PR-System?
+
+Sistema que **aprende** de cada problema resuelto en tu empresa. A diferencia de ISO, ERPs o SharePoint que solo guardan documentos muertos, PR-System:
 
 - ✅ **Aconseja** cuando reportas un problema nuevo ("Encontré 3 casos similares...")
 - ✅ **Aprende** de cada incidencia resuelta
 - ✅ **Hereda** el conocimiento para futuros casos
 - ✅ **Conversa** en lenguaje natural (no formularios)
 
----
+### Metodología Debug-First Design
 
-## 🚀 PROBAR EL SISTEMA (5 minutos)
-
-### Requisitos
-- Computadora con Windows, Mac o Linux
-- Python 3.10 o superior ([Descargar Python](https://www.python.org/downloads/))
-
-### Instalación Rápida
-
-**1. Descargar el proyecto**
 ```
-Haz clic en el botón verde "Code" → "Download ZIP"
-Descomprime el archivo en tu computadora
-```
-
-**2. Abrir Terminal/CMD en la carpeta del proyecto**
-- **Windows**: Abre la carpeta, clic derecho → "Abrir en Terminal"
-- **Mac/Linux**: Abre Terminal, escribe `cd ` y arrastra la carpeta
-
-**3. Ejecutar estos comandos (uno por uno)**
-```bash
-cd backend
-pip install -r requirements.txt
-python -m uvicorn main:app --host 0.0.0.0 --port 8000
+┌─────────────────────────────────────────────────────────┐
+│                    CICLO PR                             │
+│                                                         │
+│   ┌─────────┐    ┌─────────┐    ┌─────────┐           │
+│   │ ANTES   │───▶│ DURANTE │───▶│ DESPUÉS │           │
+│   │¿Dónde   │    │¿Cómo    │    │¿Qué     │           │
+│   │ estoy?  │    │ falla?  │    │ aprendí?│           │
+│   └─────────┘    └─────────┘    └─────────┘           │
+│        │                              │                │
+│        │      CONOCIMIENTO            │                │
+│        └──────── HEREDADO ◀───────────┘                │
+│                                                         │
+│   Axiomas:                                              │
+│   • Axioma 0: Asume fracaso                            │
+│   • Axioma 1: No hay meta final                        │
+│   • Axioma 2: Todo colapsa                             │
+│   • Axioma 3: Error = dato valioso                     │
+└─────────────────────────────────────────────────────────┘
 ```
 
-**4. Abrir en el navegador**
+### Versionado de Conocimiento
+
 ```
-http://localhost:8000
+SOLDADURA_v1.0  →  Problema: electrodos desgastados
+SOLDADURA_v1.1  →  Problema: humedad en gas CO2
+SOLDADURA_v2.0  →  Nuevo proceso implementado
+
+MANTENIMIENTO_v1.0  →  Problema: rodamientos sin lubricar
 ```
-
-¡Listo! Ya puedes usar PR-System.
-
----
-
-## 📖 Cómo Usar el Sistema
-
-### Paso 1: Crear una Incidencia
-1. Clic en **"+ Nueva Incidencia"**
-2. Describe el problema (ejemplo: "Punto frío en soldadura, línea 3")
-3. El sistema buscará casos similares automáticamente
-
-### Paso 2: Agregar Reportes
-- Cada persona involucrada puede agregar su versión de los hechos
-- Clic en la incidencia → "Agregar Reporte"
-
-### Paso 3: Resolver
-- Cuando se resuelva, clic en **"Marcar Resuelto"**
-- Describe la solución aplicada
-- El caso se agrega automáticamente a la base de conocimiento
-
-### Paso 4: Consultar el Sistema
-- Ve a **"Consultar Sistema"**
-- Pregunta: "¿Qué casos de soldadura hemos tenido?"
-- El sistema responderá basándose en casos anteriores
-
-### Paso 5: Subir Documentos (ISO, manuales, etc.)
-- Ve a **"Documentos"**
-- Arrastra archivos .txt o .md
-- Quedan disponibles para consultas futuras
 
 ---
 
-## ⚙️ Configurar el Cerebro (LLM)
+## 🔌 API Endpoints
 
-El sistema necesita un "cerebro" para responder preguntas. Tienes 3 opciones:
+### PR-Agent
 
-### Opción A: Ollama (GRATIS, 100% Privado)
-Requiere descargar e instalar Ollama:
-1. Descarga: https://ollama.ai/download
-2. Abre terminal y ejecuta: `ollama pull llama3`
-3. En PR-System → Configuración → Selecciona "Ollama"
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/api/pr/problema` | Reportar problema (inicia ciclo) |
+| POST | `/api/pr/resolver/{id}` | Cerrar ciclo (heredar conocimiento) |
+| POST | `/api/pr/consultar` | Consultar RAG + LLM |
+| GET | `/api/pr/estadisticas` | Estadísticas del sistema |
+| GET | `/api/pr/versiones` | Listar versiones de conocimiento |
+| GET | `/api/pr/versiones/{area}/historial` | Historial de un área |
 
-### Opción B: OpenAI (Pago, muy rápido)
-1. Obtén API Key: https://platform.openai.com/api-keys
-2. En PR-System → Configuración → Selecciona "OpenAI"
-3. Pega tu API Key
+### Autenticación
 
-### Opción C: Sin LLM (Solo búsqueda)
-Si no configuras ningún LLM, el sistema aún puede:
-- Guardar incidencias
-- Buscar casos similares
-- Subir documentos
-
-Solo no podrá generar respuestas en lenguaje natural.
-
----
-
-## 🎯 Casos de Uso
-
-| Área | Ejemplo |
-|------|---------|
-| **Calidad** | "¿Cómo resolvimos el problema de dimensiones fuera de especificación?" |
-| **Mantenimiento** | "¿Qué fallas ha tenido la máquina CNC-05?" |
-| **Producción** | "¿Qué ajustes funcionaron para el material X?" |
-| **Ingeniería** | "¿Por qué se eligió el proveedor Y sobre Z?" |
-
----
-
-## ❓ Problemas Comunes
-
-### "No puedo instalar las dependencias"
-```bash
-# Intenta con:
-python3 -m pip install -r requirements.txt
-
-# O en Windows:
-py -m pip install -r requirements.txt
-```
-
-### "El puerto 8000 está ocupado"
-```bash
-# Usa otro puerto:
-python -m uvicorn main:app --port 8080
-# Y abre http://localhost:8080
-```
-
-### "Error de conexión con LLM"
-- Verifica que Ollama esté corriendo (`ollama list`)
-- O que tu API Key sea correcta
-- Prueba en Configuración → "Probar Conexión"
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/api/auth/login` | Obtener token JWT |
+| GET | `/api/auth/me` | Usuario actual |
 
 ---
 
@@ -140,30 +169,118 @@ python -m uvicorn main:app --port 8080
 
 ```
 PR/
-├── backend/
-│   ├── main.py          ← Servidor (no tocar)
-│   └── requirements.txt ← Dependencias
-├── frontend/
-│   └── index.html       ← Interfaz web
-└── README.md            ← Este archivo
+├── main.py                 # API FastAPI principal
+├── start.py                # Script de inicio
+├── requirements.txt        # Dependencias Python
+├── index.html              # Frontend principal
+├── demo.html               # Demo interactiva (GitHub Pages)
+│
+├── pr_agent/               # 🧠 Módulo PR-Agent
+│   ├── __init__.py
+│   ├── agent.py            # Orquestador principal
+│   ├── ciclo.py            # Ciclo de 3 preguntas
+│   ├── versiones.py        # Sistema de versionado
+│   ├── memoria.py          # Wrapper RAG (ChromaDB)
+│   └── prompts.py          # Templates LLM
+│
+├── tests/                  # Tests unitarios
+│   └── test_pr_agent.py    # 18 tests
+│
+├── docs/                   # Documentación técnica
+│   ├── PR_ANALISIS.md
+│   ├── PR_CODIGO.md
+│   ├── PR_OLLAMA.md
+│   ├── PR_BAILEYS.md
+│   ├── PR_TELEGRAM.md
+│   ├── PR_DOCKER.md
+│   ├── PR_ENTERPRISE.md
+│   └── PR_ROADMAP.md
+│
+├── instalador_windows.bat  # Instalador automático Windows
+├── iniciar_pr.bat          # Script de inicio Windows
+├── installer.py            # Instalador Python (→ .exe)
+├── INSTALL_WINDOWS.md      # Guía instalación Windows
+│
+└── .github/
+    └── workflows/
+        └── pages.yml       # Deploy GitHub Pages
 ```
 
 ---
 
-## 💡 La Idea Detrás de PR-System
+## 🧪 Tests
 
-```
-SISTEMA TRADICIONAL          PR-SYSTEM
-─────────────────────        ─────────────────────
-Tú buscas información   →    El sistema te aconseja
-Cada caso empieza de 0  →    Cada caso hereda todo
-Llenas formatos         →    Conversas naturalmente  
-El conocimiento se va   →    El conocimiento queda
-con la gente                 en el sistema
+```bash
+# Ejecutar tests
+source venv/bin/activate
+pytest tests/test_pr_agent.py -v
+
+# Resultado esperado: 18 passed
 ```
 
 ---
 
-**PR-System v1.0** | César Castro López | 2024
+## ⚙️ Configuración LLM
 
-*"El ingeniero con 20 años de experiencia puede renunciar. Su conocimiento ya está en el sistema."*
+### Ollama (Recomendado - 100% Privado)
+
+```bash
+# Instalar Ollama
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Descargar modelo
+ollama pull llama3.2:1b    # Ligero (1.3GB)
+ollama pull llama3         # Completo (4.7GB)
+ollama pull mistral        # Alternativa (4.4GB)
+```
+
+### Configurar en PR-System
+
+1. Iniciar servidor: `python -m uvicorn main:app --port 8000`
+2. Login: admin / admin123
+3. Ir a Configuración
+4. Seleccionar modelo Ollama
+
+---
+
+## 🎯 Casos de Uso
+
+| Área | Ejemplo de Consulta |
+|------|---------------------|
+| **Calidad** | "¿Cómo resolvimos el problema de dimensiones fuera de especificación?" |
+| **Mantenimiento** | "¿Qué fallas ha tenido la máquina CNC-05?" |
+| **Producción** | "¿Qué ajustes funcionaron para el material X?" |
+| **Ingeniería** | "¿Por qué se eligió el proveedor Y sobre Z?" |
+
+---
+
+## 🤝 Contribuir
+
+```bash
+# Fork del repositorio
+# Crear rama feature
+git checkout -b feature/nueva-funcionalidad
+
+# Commits
+git commit -m "feat: descripción del cambio"
+
+# Push y crear PR
+git push origin feature/nueva-funcionalidad
+```
+
+---
+
+## 📞 Soporte
+
+- **Issues:** [github.com/srexcel/PR/issues](https://github.com/srexcel/PR/issues)
+- **Demo:** [srexcel.github.io/PR/demo.html](https://srexcel.github.io/PR/demo.html)
+
+---
+
+## 📜 Licencia
+
+MIT License - César Castro López - 2024
+
+---
+
+> *"El ingeniero con 20 años de experiencia puede renunciar. Su conocimiento ya está en el sistema."*
