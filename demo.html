@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR-System | Demo Interactiva</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --accent: #f59e0b;
+            --accent-hover: #d97706;
+            --success: #10b981;
+            --error: #ef4444;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-dark) 100%);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .demo-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--bg-dark);
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.75rem 2rem;
+            border: 2px solid var(--border);
+            background: transparent;
+            color: var(--text);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .tab.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg-dark);
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Demo Section */
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .demo-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .panel-title .icon {
+            font-size: 1.5rem;
+        }
+
+        /* PR Cycle Visualization */
+        .cycle-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .cycle-steps::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 15%;
+            right: 15%;
+            height: 3px;
+            background: var(--border);
+            z-index: 0;
+        }
+
+        .step {
+            text-align: center;
+            z-index: 1;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bg-input);
+            border: 3px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .step.active .step-circle {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg-dark);
+            transform: scale(1.1);
+        }
+
+        .step.completed .step-circle {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .step.active .step-label {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .step-question {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: var(--bg-dark);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Response Panel */
+        .response-box {
+            background: var(--bg-dark);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-left: 4px solid var(--accent);
+            min-height: 150px;
+        }
+
+        .response-box.success {
+            border-left-color: var(--success);
+        }
+
+        .response-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .response-content {
+            white-space: pre-wrap;
+            font-size: 0.95rem;
+        }
+
+        .typing {
+            display: inline-block;
+        }
+
+        .typing::after {
+            content: '▋';
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Knowledge Base */
+        .knowledge-item {
+            background: var(--bg-dark);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .knowledge-version {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--bg-dark);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .knowledge-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .knowledge-learning {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-dark);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Install Section */
+        .install-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .install-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .install-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .install-card.recommended {
+            border-color: var(--accent);
+            position: relative;
+        }
+
+        .install-card.recommended::before {
+            content: 'RECOMENDADO';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: var(--bg-dark);
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .install-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .install-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .install-desc {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .install-features {
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+
+        .install-features li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .check {
+            color: var(--success);
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #000;
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+        }
+
+        .code-block code {
+            color: var(--success);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Loader */
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--bg-input);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">🔧 PR-System</div>
+        <div class="tagline">Sistema de Conocimiento Vivo - Debug-First Design</div>
+        <div class="demo-badge">✨ DEMO INTERACTIVA</div>
+    </header>
+
+    <nav class="tabs">
+        <button class="tab active" data-section="demo">🎮 Probar Demo</button>
+        <button class="tab" data-section="knowledge">📚 Base de Conocimiento</button>
+        <button class="tab" data-section="install">💾 Instalar Sistema</button>
+    </nav>
+
+    <main class="main">
+        <!-- DEMO SECTION -->
+        <section id="demo" class="section active">
+            <div class="demo-container">
+                <div class="panel">
+                    <div class="panel-title"><span class="icon">🔄</span> Ciclo PR - 3 Preguntas</div>
+
+                    <div class="cycle-steps">
+                        <div class="step active" id="step-antes">
+                            <div class="step-circle">1</div>
+                            <div class="step-label">ANTES</div>
+                            <div class="step-question">¿Dónde estoy?</div>
+                        </div>
+                        <div class="step" id="step-durante">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">DURANTE</div>
+                            <div class="step-question">¿Cómo falla?</div>
+                        </div>
+                        <div class="step" id="step-despues">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">DESPUÉS</div>
+                            <div class="step-question">¿Qué aprendí?</div>
+                        </div>
+                    </div>
+
+                    <!-- Fase 1: ANTES -->
+                    <div id="fase-antes" class="fase-content">
+                        <div class="form-group">
+                            <label>📋 Describe el problema:</label>
+                            <textarea id="problema-desc" placeholder="Ej: La máquina de soldadura tiene problemas de porosidad en los cordones..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>🏭 Área:</label>
+                            <select id="problema-area">
+                                <option value="Producción">Producción</option>
+                                <option value="Mantenimiento">Mantenimiento</option>
+                                <option value="Calidad">Calidad</option>
+                                <option value="Logística">Logística</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>⚠️ Prioridad:</label>
+                            <select id="problema-prioridad">
+                                <option value="alta">Alta</option>
+                                <option value="media" selected>Media</option>
+                                <option value="baja">Baja</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="reportarProblema()">
+                            🚀 Reportar Problema
+                        </button>
+                    </div>
+
+                    <!-- Fase 2: DURANTE -->
+                    <div id="fase-durante" class="fase-content hidden">
+                        <div class="form-group">
+                            <label>🔧 Solución aplicada:</label>
+                            <textarea id="solucion" placeholder="Describe qué hiciste para resolver el problema..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>🔍 Causa raíz identificada:</label>
+                            <textarea id="causa-raiz" placeholder="¿Cuál fue la causa real del problema?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>🛡️ Acciones preventivas:</label>
+                            <textarea id="acciones-preventivas" placeholder="¿Qué haremos para evitar que vuelva a pasar?"></textarea>
+                        </div>
+                        <button class="btn btn-success" onclick="resolverProblema()">
+                            ✅ Cerrar Ciclo y Heredar Conocimiento
+                        </button>
+                    </div>
+
+                    <!-- Fase 3: DESPUÉS -->
+                    <div id="fase-despues" class="fase-content hidden">
+                        <div style="text-align: center; padding: 2rem;">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
+                            <h3 style="color: var(--success); margin-bottom: 1rem;">¡Conocimiento Heredado!</h3>
+                            <p id="version-creada" style="font-size: 1.5rem; color: var(--accent); margin-bottom: 1rem;"></p>
+                            <p style="color: var(--text-muted); margin-bottom: 2rem;">
+                                Este caso ahora forma parte de la base de conocimiento.<br>
+                                La próxima vez que ocurra algo similar, el sistema lo recordará.
+                            </p>
+                            <button class="btn btn-primary" onclick="reiniciarDemo()">
+                                🔄 Probar Otro Caso
+                            </button>
+                            <button class="btn btn-outline" onclick="showSection('knowledge')">
+                                📚 Ver Base de Conocimiento
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-title"><span class="icon">🤖</span> Respuesta del Sistema</div>
+
+                    <div class="response-box" id="response-box">
+                        <div class="response-label">Esperando input...</div>
+                        <div class="response-content" id="response-content">
+                            Describe un problema para comenzar el ciclo PR.
+
+El sistema buscará casos similares en la base de conocimiento y te guiará en la documentación.
+
+<strong>Axiomas PR:</strong>
+• Axioma 0: Asume fracaso
+• Axioma 1: No hay meta final
+• Axioma 2: Todo colapsa
+• Axioma 3: Error = dato valioso
+                        </div>
+                    </div>
+
+                    <div class="stats-grid" style="margin-top: 1.5rem;">
+                        <div class="stat-card">
+                            <div class="stat-value" id="stat-docs">3</div>
+                            <div class="stat-label">Documentos en RAG</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="stat-versions">3</div>
+                            <div class="stat-label">Versiones</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="stat-areas">2</div>
+                            <div class="stat-label">Áreas Activas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KNOWLEDGE BASE SECTION -->
+        <section id="knowledge" class="section">
+            <div class="panel">
+                <div class="panel-title"><span class="icon">📚</span> Base de Conocimiento</div>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+                    Conocimiento heredado de casos resueltos. Cada versión representa un aprendizaje validado.
+                </p>
+
+                <div id="knowledge-list">
+                    <div class="knowledge-item">
+                        <span class="knowledge-version">PRODUCCION_v1.0</span>
+                        <div class="knowledge-title">Falla en máquina de soldadura línea 3</div>
+                        <div class="knowledge-learning">
+                            <strong>Aprendizaje:</strong> Electrodos de mala calidad y corriente excesiva causaban desgaste prematuro.
+                        </div>
+                    </div>
+
+                    <div class="knowledge-item">
+                        <span class="knowledge-version">PRODUCCION_v1.1</span>
+                        <div class="knowledge-title">Porosidad en soldaduras MIG línea 1</div>
+                        <div class="knowledge-learning">
+                            <strong>Aprendizaje:</strong> El tanque de gas CO2 tenía condensación interna y el alambre estaba expuesto a humedad ambiental.
+                        </div>
+                    </div>
+
+                    <div class="knowledge-item">
+                        <span class="knowledge-version">MANTENIMIENTO_v1.0</span>
+                        <div class="knowledge-title">Banda transportadora línea 5 se detiene</div>
+                        <div class="knowledge-learning">
+                            <strong>Aprendizaje:</strong> Falta de mantenimiento preventivo en rodamientos. El ruido metálico indicaba fricción excesiva.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INSTALL SECTION -->
+        <section id="install" class="section">
+            <h2 style="text-align: center; margin-bottom: 2rem;">Elige cómo usar PR-System</h2>
+
+            <div class="install-options">
+                <div class="install-card">
+                    <div class="install-icon">🌐</div>
+                    <div class="install-title">Demo Online</div>
+                    <div class="install-desc">Prueba el sistema ahora mismo sin instalar nada</div>
+                    <ul class="install-features">
+                        <li><span class="check">✓</span> Sin instalación</li>
+                        <li><span class="check">✓</span> Acceso inmediato</li>
+                        <li><span class="check">✓</span> Datos de ejemplo</li>
+                        <li><span style="color: var(--error);">✗</span> Datos no persisten</li>
+                    </ul>
+                    <button class="btn btn-outline" onclick="showSection('demo')">
+                        Probar Demo
+                    </button>
+                </div>
+
+                <div class="install-card recommended">
+                    <div class="install-icon">💻</div>
+                    <div class="install-title">Instalación Local</div>
+                    <div class="install-desc">Instala en tu computadora con todos los datos privados</div>
+                    <ul class="install-features">
+                        <li><span class="check">✓</span> 100% privado</li>
+                        <li><span class="check">✓</span> IA local (Ollama)</li>
+                        <li><span class="check">✓</span> Datos persistentes</li>
+                        <li><span class="check">✓</span> Sin límites</li>
+                    </ul>
+                    <button class="btn btn-primary" onclick="mostrarInstalacion()">
+                        Descargar Instalador
+                    </button>
+                </div>
+
+                <div class="install-card">
+                    <div class="install-icon">🏢</div>
+                    <div class="install-title">Versión Enterprise</div>
+                    <div class="install-desc">Para equipos y empresas con soporte dedicado</div>
+                    <ul class="install-features">
+                        <li><span class="check">✓</span> Multi-usuario</li>
+                        <li><span class="check">✓</span> Servidor dedicado</li>
+                        <li><span class="check">✓</span> Soporte técnico</li>
+                        <li><span class="check">✓</span> Personalización</li>
+                    </ul>
+                    <button class="btn btn-outline" onclick="contactarEnterprise()">
+                        Contactar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Instrucciones de instalación -->
+            <div id="install-instructions" class="panel hidden" style="margin-top: 2rem;">
+                <div class="panel-title"><span class="icon">📥</span> Instrucciones de Instalación</div>
+
+                <h3 style="margin: 1rem 0;">Windows</h3>
+                <ol style="margin-left: 1.5rem; color: var(--text-muted);">
+                    <li>Descarga el instalador desde GitHub</li>
+                    <li>Ejecuta <code>instalador_windows.bat</code> como administrador</li>
+                    <li>Espera a que termine (instala Python, Ollama y dependencias)</li>
+                    <li>Usa <code>iniciar_pr.bat</code> para iniciar el sistema</li>
+                </ol>
+
+                <div class="code-block">
+                    <code>git clone https://github.com/srexcel/PR.git
+cd PR
+instalador_windows.bat</code>
+                </div>
+
+                <h3 style="margin: 1rem 0;">Linux / Mac</h3>
+                <div class="code-block">
+                    <code>git clone https://github.com/srexcel/PR.git
+cd PR
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3.2:1b
+python -m uvicorn main:app --port 8000</code>
+                </div>
+
+                <div style="margin-top: 1.5rem; text-align: center;">
+                    <a href="https://github.com/srexcel/PR" target="_blank" class="btn btn-primary">
+                        📦 Ir a GitHub
+                    </a>
+                    <a href="https://github.com/srexcel/PR/archive/refs/heads/main.zip" class="btn btn-outline">
+                        ⬇️ Descargar ZIP
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>PR-System © 2024 | <a href="https://github.com/srexcel/PR" target="_blank">GitHub</a></p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+            Metodología Debug-First Design - Porque el error es dato valioso
+        </p>
+    </footer>
+
+    <script>
+        // Simulated knowledge base
+        let knowledgeBase = [
+            {
+                version: 'PRODUCCION_v1.0',
+                title: 'Falla en máquina de soldadura línea 3',
+                learning: 'Electrodos de mala calidad y corriente excesiva causaban desgaste prematuro.',
+                area: 'Producción',
+                keywords: ['soldadura', 'electrodos', 'porosidad']
+            },
+            {
+                version: 'PRODUCCION_v1.1',
+                title: 'Porosidad en soldaduras MIG línea 1',
+                learning: 'El tanque de gas CO2 tenía condensación interna y el alambre estaba expuesto a humedad ambiental.',
+                area: 'Producción',
+                keywords: ['soldadura', 'MIG', 'porosidad', 'humedad']
+            },
+            {
+                version: 'MANTENIMIENTO_v1.0',
+                title: 'Banda transportadora línea 5 se detiene',
+                learning: 'Falta de mantenimiento preventivo en rodamientos. El ruido metálico indicaba fricción excesiva.',
+                area: 'Mantenimiento',
+                keywords: ['banda', 'transportadora', 'rodamiento', 'ruido']
+            }
+        ];
+
+        let stats = { docs: 3, versions: 3, areas: 2 };
+        let currentProblem = {};
+
+        // Tab navigation
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                showSection(tab.dataset.section);
+            });
+        });
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+
+            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        // Typing effect
+        function typeText(element, text, speed = 20) {
+            return new Promise(resolve => {
+                element.innerHTML = '';
+                let i = 0;
+                const timer = setInterval(() => {
+                    if (i < text.length) {
+                        element.innerHTML += text.charAt(i);
+                        i++;
+                    } else {
+                        clearInterval(timer);
+                        resolve();
+                    }
+                }, speed);
+            });
+        }
+
+        // Report problem
+        async function reportarProblema() {
+            const desc = document.getElementById('problema-desc').value;
+            const area = document.getElementById('problema-area').value;
+            const prioridad = document.getElementById('problema-prioridad').value;
+
+            if (!desc.trim()) {
+                alert('Por favor describe el problema');
+                return;
+            }
+
+            currentProblem = { desc, area, prioridad };
+
+            // Update UI
+            document.getElementById('step-antes').classList.remove('active');
+            document.getElementById('step-antes').classList.add('completed');
+            document.getElementById('step-durante').classList.add('active');
+
+            // Search for similar cases
+            const similarCases = findSimilarCases(desc);
+
+            let response = `<strong>📍 Checkpoint creado</strong>
+Fase: DURANTE
+Pregunta: ¿Cómo falla?
+
+`;
+
+            if (similarCases.length > 0) {
+                response += `<strong>🔍 Casos similares encontrados:</strong>\n`;
+                similarCases.forEach(c => {
+                    response += `\n• ${c.version}: ${c.title}\n  Aprendizaje: ${c.learning}\n`;
+                });
+                response += `\n<span style="color: var(--success);">Considera estas soluciones anteriores.</span>`;
+            } else {
+                response += `<strong>📝 Caso nuevo detectado</strong>
+
+Preguntas para documentar:
+1. ¿Cuándo empezó el problema?
+2. ¿Qué acciones se han intentado?
+3. ¿Quién reportó el problema?
+4. ¿Cuál es el impacto?
+5. ¿Qué condiciones lo reproducen?`;
+            }
+
+            document.getElementById('response-box').classList.remove('success');
+            await typeText(document.getElementById('response-content'), response);
+
+            // Show phase 2
+            document.getElementById('fase-antes').classList.add('hidden');
+            document.getElementById('fase-durante').classList.remove('hidden');
+        }
+
+        // Find similar cases
+        function findSimilarCases(text) {
+            const words = text.toLowerCase().split(/\s+/);
+            return knowledgeBase.filter(item => {
+                return item.keywords.some(kw =>
+                    words.some(w => w.includes(kw) || kw.includes(w))
+                );
+            });
+        }
+
+        // Resolve problem
+        async function resolverProblema() {
+            const solucion = document.getElementById('solucion').value;
+            const causaRaiz = document.getElementById('causa-raiz').value;
+            const acciones = document.getElementById('acciones-preventivas').value;
+
+            if (!solucion.trim() || !causaRaiz.trim()) {
+                alert('Por favor completa la solución y causa raíz');
+                return;
+            }
+
+            // Update steps
+            document.getElementById('step-durante').classList.remove('active');
+            document.getElementById('step-durante').classList.add('completed');
+            document.getElementById('step-despues').classList.add('active');
+
+            // Calculate new version
+            const areaVersions = knowledgeBase.filter(k => k.area === currentProblem.area);
+            const majorVersion = 1;
+            const minorVersion = areaVersions.length;
+            const newVersion = `${currentProblem.area.toUpperCase()}_v${majorVersion}.${minorVersion}`;
+
+            // Add to knowledge base
+            knowledgeBase.push({
+                version: newVersion,
+                title: currentProblem.desc.substring(0, 50) + '...',
+                learning: causaRaiz,
+                area: currentProblem.area,
+                keywords: currentProblem.desc.toLowerCase().split(/\s+/).slice(0, 5)
+            });
+
+            // Update stats
+            stats.docs++;
+            stats.versions++;
+            updateStats();
+
+            // Update response
+            const response = `<strong style="color: var(--success);">✅ Ciclo PR Cerrado</strong>
+
+Fase: DESPUÉS
+Pregunta: ¿Qué aprendí?
+
+<strong>Conocimiento heredado como:</strong>
+<span style="font-size: 1.5rem; color: var(--accent);">${newVersion}</span>
+
+<strong>Resumen:</strong>
+• Problema: ${currentProblem.desc.substring(0, 50)}...
+• Causa raíz: ${causaRaiz}
+• Solución: ${solucion}
+
+<span style="color: var(--success);">El sistema ahora recordará esta solución para casos similares.</span>`;
+
+            document.getElementById('response-box').classList.add('success');
+            await typeText(document.getElementById('response-content'), response);
+
+            // Show phase 3
+            document.getElementById('fase-durante').classList.add('hidden');
+            document.getElementById('fase-despues').classList.remove('hidden');
+            document.getElementById('version-creada').textContent = newVersion;
+
+            // Update knowledge list
+            updateKnowledgeList();
+        }
+
+        function updateStats() {
+            document.getElementById('stat-docs').textContent = stats.docs;
+            document.getElementById('stat-versions').textContent = stats.versions;
+
+            const uniqueAreas = [...new Set(knowledgeBase.map(k => k.area))];
+            stats.areas = uniqueAreas.length;
+            document.getElementById('stat-areas').textContent = stats.areas;
+        }
+
+        function updateKnowledgeList() {
+            const list = document.getElementById('knowledge-list');
+            list.innerHTML = knowledgeBase.map(item => `
+                <div class="knowledge-item fade-in">
+                    <span class="knowledge-version">${item.version}</span>
+                    <div class="knowledge-title">${item.title}</div>
+                    <div class="knowledge-learning">
+                        <strong>Aprendizaje:</strong> ${item.learning}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function reiniciarDemo() {
+            // Reset steps
+            document.querySelectorAll('.step').forEach(s => {
+                s.classList.remove('active', 'completed');
+            });
+            document.getElementById('step-antes').classList.add('active');
+
+            // Reset forms
+            document.getElementById('problema-desc').value = '';
+            document.getElementById('solucion').value = '';
+            document.getElementById('causa-raiz').value = '';
+            document.getElementById('acciones-preventivas').value = '';
+
+            // Reset phases
+            document.getElementById('fase-antes').classList.remove('hidden');
+            document.getElementById('fase-durante').classList.add('hidden');
+            document.getElementById('fase-despues').classList.add('hidden');
+
+            // Reset response
+            document.getElementById('response-box').classList.remove('success');
+            document.getElementById('response-content').innerHTML = `Describe un problema para comenzar el ciclo PR.
+
+El sistema buscará casos similares en la base de conocimiento y te guiará en la documentación.
+
+<strong>Axiomas PR:</strong>
+• Axioma 0: Asume fracaso
+• Axioma 1: No hay meta final
+• Axioma 2: Todo colapsa
+• Axioma 3: Error = dato valioso`;
+        }
+
+        function mostrarInstalacion() {
+            document.getElementById('install-instructions').classList.remove('hidden');
+            document.getElementById('install-instructions').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function contactarEnterprise() {
+            alert('Para la versión Enterprise, contacta a: enterprise@pr-system.com\n\nO abre un issue en GitHub.');
+        }
+    </script>
+</body>
+</html>
